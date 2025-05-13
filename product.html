@@ -108,134 +108,155 @@
             <!-- سيتم تعبئة هذا القسم بالجافاسكريبت -->
         </div>
     </div>
-
     <script>
-        // معالجة معرّف المنتج من URL
-        const params = new URLSearchParams(window.location.search);
-        const productId = parseInt(params.get("id"));
+        // دالة لجلب المنتجات من ملف products.js
+        async function loadProducts() {
+            try {
+                const response = await fetch('products.js');
+                const text = await response.text();
 
-        // جلب بيانات المنتجات من ملف products.js
-        fetch('products.js')
-            .then(response => response.text())
-            .then(text => {
-                    // استخراج مصفوفة المنتجات من النص
-                    const productsMatch = text.match(/const products = (\[.*?\])/s);
-                    if (!productsMatch) {
-                        throw new Error('Could not find products array');
-                    }
-                    const products = eval(productsMatch[1]);
-
-                    // البحث عن المنتج المطلوب
-                    const product = products.find(p => p.id === productId);
-                    const container = document.getElementById("product-details");
-
-                    if (product) {
-                        // إنشاء واجهة تفاصيل المنتج
-                        container.innerHTML = `
-                        <div class="product-images relative">
-                            ${product.badge ? `<span class="badge ${product.badge.toLowerCase()}">${product.badge}</span>` : ''}
-                            <img src="${product.image}" alt="${product.name}" class="w-full rounded-lg shadow-lg" id="main-image" />
-                            <div class="product-gallery">
-                                <img src="${product.image}" alt="${product.name}" class="w-full h-24 object-cover rounded-lg" onclick="changeMainImage('${product.image}')" />
-                                ${[1, 2, 3].map(i => `
-                                    <img src="${product.image.replace(/\d+$/, i)}" alt="${product.name} ${i}" class="w-full h-24 object-cover rounded-lg" 
-                                         onclick="changeMainImage('${product.image.replace(/\d+$/, i)}')" />
-                                `).join('')}
-                            </div>
-                        </div>
-                        
-                        <div class="product-info">
-                            <h1 class="text-3xl font-bold mb-2">${product.name}</h1>
-                            <p class="text-gray-400 mb-4">${product.category}</p>
-                            
-                            <div class="flex items-center mb-6">
-                                <p class="text-2xl text-purple-400 mr-3">$${product.price.toFixed(2)}</p>
-                                ${product.oldPrice ? `<p class="text-lg old-price">$${product.oldPrice.toFixed(2)}</p>` : ''}
-                            </div>
-                            
-                            <div class="mb-6">
-                                <h3 class="text-xl font-semibold mb-3">Description:</h3>
-                                <p class="text-gray-400">${product.description}</p>
-                            </div>
-                            
-                            <div class="mb-6">
-                                <h3 class="text-xl font-semibold mb-3">Size:</h3>
-                                <div class="flex flex-wrap gap-2">
-                                    ${['S', 'M', 'L', 'XL'].map(size => `
-                                        <button onclick="selectSize(this)" class="size-btn px-4 py-2 border border-gray-700 rounded-full hover:bg-gray-800 transition">
-                                            ${size}
-                                        </button>
-                                    `).join("")}
-                                </div>
-                            </div>
-                            
-                            <div class="mb-6">
-                                <h3 class="text-xl font-semibold mb-3">Quantity:</h3>
-                                <div class="flex items-center">
-                                    <button onclick="updateQuantity(-1)" class="quantity-btn bg-gray-800 mr-2">
-                                        <i class="fas fa-minus"></i>
-                                    </button>
-                                    <span id="quantity" class="text-xl mx-4 w-8 text-center">1</span>
-                                    <button onclick="updateQuantity(1)" class="quantity-btn bg-gray-800 ml-2">
-                                        <i class="fas fa-plus"></i>
-                                    </button>
-                                </div>
-                            </div>
-                            
-                            <button onclick="addToCart(${productId})" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition mb-6">
-                                <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
-                            </button>
-                            
-                            <div class="border-t border-gray-800 pt-6">
-                                <h3 class="text-xl font-semibold mb-3">Product Details:</h3>
-                                <ul class="list-disc list-inside text-gray-400">
-                                    <li class="mb-2">Category: ${product.category}</li>
-                                    <li class="mb-2">High-quality materials</li>
-                                    <li class="mb-2">Premium craftsmanship</li>
-                                    <li class="mb-2">Fast shipping available</li>
-                                </ul>
-                            </div>
-                        </div>
-                    `;
-                } else {
-                    container.innerHTML = `
-                        <div class="col-span-2 text-center py-12">
-                            <i class="fas fa-exclamation-circle text-5xl text-red-500 mb-4"></i>
-                            <h2 class="text-2xl font-bold">Product Not Found</h2>
-                            <p class="text-gray-500 mt-2">Sorry, the requested product could not be found</p>
-                            <a href="index.html" class="inline-block mt-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition">
-                                Back to Store
-                            </a>
-                        </div>
-                    `;
+                // استخراج مصفوفة المنتجات من النص
+                const productsMatch = text.match(/const products = (\[.*?\])/s);
+                if (!productsMatch) {
+                    throw new Error('Could not find products array');
                 }
-            })
-            .catch(error => {
-                console.error('Error loading products:', error);
-                const container = document.getElementById("product-details");
-                container.innerHTML = `
-                    <div class="col-span-2 text-center py-12">
-                        <i class="fas fa-exclamation-circle text-5xl text-red-500 mb-4"></i>
-                        <h2 class="text-2xl font-bold">Error Loading Product</h2>
-                        <p class="text-gray-500 mt-2">Sorry, there was an error loading the product details</p>
-                        <a href="index.html" class="inline-block mt-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition">
-                            Back to Store
-                        </a>
-                    </div>
-                `;
-            });
 
-        // تغيير الصورة الرئيسية عند النقر على الصور المصغرة
+                // تحويل النص إلى كائن JavaScript
+                const products = eval(productsMatch[1]);
+                return products;
+            } catch (error) {
+                console.error('Error loading products:', error);
+                showError();
+                return [];
+            }
+        }
+
+        // دالة لعرض تفاصيل المنتج
+        function displayProduct(product) {
+            const container = document.getElementById("product-details");
+
+            container.innerHTML = `
+                <div class="product-images relative">
+                    ${product.badge ? `<span class="badge ${product.badge.toLowerCase()}">${product.badge}</span>` : ''}
+                    <img src="${product.image}" alt="${product.name}" class="w-full rounded-lg shadow-lg" id="main-image" />
+                    <div class="product-gallery">
+                        ${product.gallery ? product.gallery.map(img => `
+                            <img src="${img}" alt="${product.name}" class="w-full h-24 object-cover rounded-lg" onclick="changeMainImage('${img}')" />
+                        `).join('') : `
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-24 object-cover rounded-lg" onclick="changeMainImage('${product.image}')" />
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-24 object-cover rounded-lg" onclick="changeMainImage('${product.image}')" />
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-24 object-cover rounded-lg" onclick="changeMainImage('${product.image}')" />
+                        `}
+                    </div>
+                </div>
+                
+                <div class="product-info">
+                    <h1 class="text-3xl font-bold mb-2">${product.name}</h1>
+                    <p class="text-gray-400 mb-4">${product.category}</p>
+                    
+                    <div class="flex items-center mb-6">
+                        <p class="text-2xl text-purple-400 mr-3">$${product.price.toFixed(2)}</p>
+                        ${product.oldPrice ? `<p class="text-lg old-price">$${product.oldPrice.toFixed(2)}</p>` : ''}
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold mb-3">Description:</h3>
+                        <p class="text-gray-400">${product.description}</p>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold mb-3">Size:</h3>
+                        <div class="flex flex-wrap gap-2">
+                            ${(product.sizes || ['S', 'M', 'L', 'XL']).map(size => `
+                                <button onclick="selectSize(this)" class="size-btn px-4 py-2 border border-gray-700 rounded-full hover:bg-gray-800 transition">
+                                    ${size}
+                                </button>
+                            `).join("")}
+                        </div>
+                    </div>
+                    
+                    <div class="mb-6">
+                        <h3 class="text-xl font-semibold mb-3">Quantity:</h3>
+                        <div class="flex items-center">
+                            <button onclick="updateQuantity(-1)" class="quantity-btn bg-gray-800 mr-2">
+                                <i class="fas fa-minus"></i>
+                            </button>
+                            <span id="quantity" class="text-xl mx-4 w-8 text-center">1</span>
+                            <button onclick="updateQuantity(1)" class="quantity-btn bg-gray-800 ml-2">
+                                <i class="fas fa-plus"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button onclick="addToCart(${product.id})" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition mb-6">
+                        <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                    </button>
+                    
+                    <div class="border-t border-gray-800 pt-6">
+                        <h3 class="text-xl font-semibold mb-3">Product Details:</h3>
+                        <ul class="list-disc list-inside text-gray-400">
+                            ${(product.details || [
+                                'High-quality materials',
+                                'Premium craftsmanship',
+                                'Fast shipping available'
+                            ]).map(detail => `<li class="mb-2">${detail}</li>`).join('')}
+                        </ul>
+                    </div>
+                </div>
+            `;
+        }
+    
+        // دالة لعرض رسالة الخطأ
+        function showError() {
+            const container = document.getElementById("product-details");
+            container.innerHTML = `
+                <div class="col-span-2 text-center py-12">
+                    <i class="fas fa-exclamation-circle text-5xl text-red-500 mb-4"></i>
+                    <h2 class="text-2xl font-bold">Error Loading Product</h2>
+                    <p class="text-gray-500 mt-2">Sorry, there was an error loading the product details</p>
+                    <a href="index.html" class="inline-block mt-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition">
+                        Back to Store
+                    </a>
+                </div>
+            `;
+        }
+    
+        // دالة التهيئة الرئيسية
+        async function initProductPage() {
+            const params = new URLSearchParams(window.location.search);
+            const productId = parseInt(params.get("id"));
+            
+            if (!productId) {
+                showError();
+                return;
+            }
+            
+            const products = await loadProducts();
+            const product = products.find(p => p.id === productId);
+            
+            if (product) {
+                displayProduct(product);
+            } else {
+                showError();
+            }
+        }
+    
+        // استدعاء دالة التهيئة عند تحميل الصفحة
+        document.addEventListener('DOMContentLoaded', initProductPage);
+    
+        // ===== الدوال المساعدة =====
+        
+        // تغيير الصورة الرئيسية
         function changeMainImage(newSrc) {
             document.getElementById("main-image").src = newSrc;
         }
-
+    
         // اختيار المقاس
         function selectSize(btn) {
-            document.querySelectorAll(".size-btn").forEach(b => b.classList.remove("selected-size", "bg-purple-600", "text-white"));
-            btn.classList.add("selected-size", "bg-purple-600", "text-white");
+            document.querySelectorAll(".size-btn").forEach(b => b.classList.remove("selected-size"));
+            btn.classList.add("selected-size");
         }
-
+    
         // تحديث الكمية
         let quantity = 1;
         function updateQuantity(change) {
@@ -244,46 +265,39 @@
             if (quantity > 10) quantity = 10;
             document.getElementById("quantity").textContent = quantity;
         }
-
+    
         // إضافة إلى السلة
-        function addToCart(productId) {
-            const selectedSize = document.querySelector(".size-btn.selected-size");
-            const quantity = parseInt(document.getElementById("quantity").textContent);
-            
-            fetch('products.js')
-                .then(response => response.text())
-                .then(text => {
-                    const productsMatch = text.match(/const products = (\[.*?\])/s);
-                    if (!productsMatch) throw new Error('Could not find products array');
-                    const products = eval(productsMatch[1]);
-                    const product = products.find(p => p.id === productId);
-                    
-                    if (!product) {
-                        alert("Product not found");
-                        return;
-                    }
-
-                    const cart = JSON.parse(localStorage.getItem("cart")) || [];
-                    const existingItemIndex = cart.findIndex(item => item.id === product.id && 
-                        (!selectedSize || item.size === selectedSize.textContent));
-
-                    if (existingItemIndex >= 0) {
-                        cart[existingItemIndex].quantity += quantity;
-                    } else {
-                        cart.push({
-                            ...product,
-                            quantity: quantity,
-                            size: selectedSize ? selectedSize.textContent : null
-                        });
-                    }
-                    
-                    localStorage.setItem("cart", JSON.stringify(cart));
-                    alert(`Added ${quantity} ${product.name} to your cart!`);
-                })
-                .catch(error => {
-                    console.error("Error adding to cart:", error);
-                    alert("Error adding product to cart");
-                });
+        async function addToCart(productId) {
+            try {
+                const products = await loadProducts();
+                const product = products.find(p => p.id === productId);
+                
+                if (!product) {
+                    alert("Product not found");
+                    return;
+                }
+    
+                const selectedSize = document.querySelector(".size-btn.selected-size");
+                const cart = JSON.parse(localStorage.getItem("cart")) || [];
+                const existingItem = cart.find(item => item.id === product.id && 
+                    (!selectedSize || item.size === selectedSize?.textContent));
+    
+                if (existingItem) {
+                    existingItem.quantity += quantity;
+                } else {
+                    cart.push({
+                        ...product,
+                        quantity: quantity,
+                        size: selectedSize ? selectedSize.textContent : null
+                    });
+                }
+                
+                localStorage.setItem("cart", JSON.stringify(cart));
+                alert(`Added ${quantity} ${product.name} to your cart!`);
+            } catch (error) {
+                console.error("Error adding to cart:", error);
+                alert("Error adding product to cart");
+            }
         }
     </script>
 </body>
