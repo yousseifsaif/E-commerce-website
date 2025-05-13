@@ -41,6 +41,10 @@
         .quantity-btn:hover {
             background-color: #374151;
         }
+        
+        #success-modal {
+            transition: opacity 0.3s ease;
+        }
     </style>
 </head>
 
@@ -143,6 +147,9 @@
         </div>
     </div>
 
+    <!-- Load axios library -->
+    <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
+
     <script>
         // Get cart from localStorage
         let cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -208,6 +215,7 @@
             totalPriceEl.textContent = `EGP ${subtotal.toFixed(2)}`;
         }
 
+
         // Update product quantity
         function updateQuantity(index, change) {
             cart[index].quantity += change;
@@ -230,30 +238,59 @@
             window.location.href = "index.html";
         }
 
-        // Submit order to Google Sheets
         async function submitToGoogleSheets(orderData) {
-            // Replace with your Google Sheets script URL
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbz9WimIKIQLnzjiKQTKZJsSiZQcy4svJhT9GUocN5tXtX7gObV_2JWr5rqx1OnuMrcb/exec';
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbz-wXgjr1M7FHr0pb3M4mqOmGeDIoyfnMc7fIDALYFHfdvxwO9Xn2TUvvGU2JZbtzdC/exec';
 
             try {
+                console.log("Submitting order:", orderData);
+
+                // استخدم mode: 'no-cors' مع fetch
                 const response = await fetch(scriptURL, {
                     method: 'POST',
-                    body: JSON.stringify(orderData),
+                    mode: 'no-cors',
                     headers: {
-                        'Content-Type': 'application/json'
-                    }
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(orderData)
                 });
 
-                if (response.ok) {
-                    return true;
-                } else {
-                    throw new Error('Failed to submit to Google Sheets');
-                }
+                // في حالة no-cors لن نتمكن من قراءة الresponse
+                // لذلك نعتبر أي محاولة إرسال ناجحة
+                return true;
+
             } catch (error) {
                 console.error('Error:', error);
                 return false;
             }
         }
+
+        // Event listener for order confirmation
+        confirmBtn.addEventListener('click', async() => {
+            if (!checkoutForm.checkValidity()) {
+                alert('Please fill in all required fields.');
+                return;
+            }
+
+            const orderData = {
+                name: checkoutForm.name.value,
+                email: checkoutForm.email.value,
+                phone: checkoutForm.phone.value,
+                address: checkoutForm.address.value,
+                notes: checkoutForm.notes.value,
+                items: cart,
+                totalPrice: totalPriceEl.textContent,
+            };
+
+            const isSuccess = await submitToGoogleSheets(orderData);
+
+            if (isSuccess) {
+                successModal.classList.remove("hidden");
+            } else {
+                alert("There was an error submitting your order. Please try again.");
+            }
+        });
+        displayOrderItems();
+
 
         // Confirm order
         confirmBtn.addEventListener("click", async function() {
@@ -281,6 +318,7 @@
                 date: new Date().toISOString()
             };
 
+            // Show loading state
             confirmBtn.disabled = true;
             confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
 
@@ -295,7 +333,7 @@
                 // Show success modal
                 successModal.classList.remove("hidden");
             } else {
-                alert("There was an error processing your order. Please try again.");
+                alert("There was an error processing your order. Please try again later.");
             }
 
             // Reset button
