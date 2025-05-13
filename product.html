@@ -67,27 +67,9 @@
             <!-- سيتم تعبئة هذا القسم بالجافاسكريبت -->
         </div>
     </div>
+    <script src="products.js"></script>
 
     <script>
-        // بيانات المنتجات (يمكن استبدالها بالاستدعاء من products.js)
-        const products = [{
-                id: 1,
-                name: "تيشرت جرافيك",
-                price: 199.99,
-                image: "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9",
-                description: "تيشرت عالي الجودة بطبعة جرافيك مميزة من القطن المريح للارتداء اليومي",
-                details: ["100% قطن", "غسيل على البارد", "صنع في مصر", "الموديل طوله 180 سم ويرتدي مقاس L"],
-                sizes: ["S", "M", "L", "XL"],
-                gallery: [
-                    "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9",
-                    "https://images.unsplash.com/photo-1576566588028-4147f3842f27",
-                    "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9",
-                    "https://images.unsplash.com/photo-1576566588028-4147f3842f27"
-                ]
-            },
-            // يمكن إضافة المزيد من المنتجات هنا
-        ];
-
         // معالجة معرّف المنتج من URL
         const params = new URLSearchParams(window.location.search);
         const productId = parseInt(params.get("id"));
