@@ -112,18 +112,8 @@
         // دالة لجلب المنتجات من ملف products.js
         async function loadProducts() {
             try {
-                const response = await fetch('products.js');
-                const text = await response.text();
-
-                // استخراج مصفوفة المنتجات من النص
-                const productsMatch = text.match(/const products = (\[.*?\])/s);
-                if (!productsMatch) {
-                    throw new Error('Could not find products array');
-                }
-
-                // تحويل النص إلى كائن JavaScript
-                const products = eval(productsMatch[1]);
-                return products;
+                const response = await fetch('products.json');
+                return await response.json();
             } catch (error) {
                 console.error('Error loading products:', error);
                 showError();
