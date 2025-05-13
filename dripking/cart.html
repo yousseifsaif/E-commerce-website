@@ -1,0 +1,312 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Checkout - DRIP KING</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <style>
+        .form-input {
+            transition: all 0.3s ease;
+        }
+        
+        .form-input:focus {
+            border-color: #9333ea;
+            box-shadow: 0 0 0 3px rgba(147, 51, 234, 0.2);
+        }
+        
+        .checkout-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .checkout-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
+        }
+        
+        .quantity-btn {
+            width: 30px;
+            height: 30px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            background-color: #1f2937;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        
+        .quantity-btn:hover {
+            background-color: #374151;
+        }
+    </style>
+</head>
+
+<body class="bg-black text-gray-200 min-h-screen">
+    <!-- Navbar -->
+    <nav class="bg-black border-b border-gray-800 px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+        <div class="text-2xl font-bold text-white">DRIP KING👑</div>
+        <a href="index.html" class="text-gray-400 hover:text-white transition">
+            <i class="fas fa-arrow-left mr-2"></i> Continue Shopping
+        </a>
+    </nav>
+
+    <div class="container mx-auto px-4 py-8 max-w-6xl">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+            <!-- Customer Form -->
+            <div class="bg-gray-900 p-6 rounded-lg border border-gray-800">
+                <h2 class="text-2xl font-bold mb-6 flex items-center">
+                    <i class="fas fa-user-circle mr-3 text-purple-500"></i> Customer Information
+                </h2>
+
+                <form id="checkout-form">
+                    <div class="mb-4">
+                        <label class="block text-gray-400 mb-2">Full Name *</label>
+                        <input type="text" name="name" required class="form-input w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-400 mb-2">Email *</label>
+                        <input type="email" name="email" required class="form-input w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-400 mb-2">Phone Number *</label>
+                        <input type="tel" name="phone" required class="form-input w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500">
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="block text-gray-400 mb-2">Shipping Address *</label>
+                        <textarea name="address" rows="3" required class="form-input w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500"></textarea>
+                    </div>
+
+                    <div class="mb-6">
+                        <label class="block text-gray-400 mb-2">Additional Notes</label>
+                        <textarea name="notes" rows="2" class="form-input w-full bg-gray-800 border border-gray-700 rounded-lg px-4 py-2 focus:outline-none focus:border-purple-500"></textarea>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Order Summary -->
+            <div>
+                <div class="bg-gray-900 p-6 rounded-lg border border-gray-800 sticky top-24">
+                    <h2 class="text-2xl font-bold mb-6 flex items-center">
+                        <i class="fas fa-shopping-bag mr-3 text-purple-500"></i> Order Summary
+                    </h2>
+
+                    <div id="order-items" class="mb-6 max-h-96 overflow-y-auto">
+                        <!-- Items will be added here by JavaScript -->
+                    </div>
+
+                    <div class="border-t border-gray-800 pt-4 mb-6">
+                        <div class="flex justify-between mb-2">
+                            <span class="text-gray-400">Subtotal</span>
+                            <span id="subtotal" class="font-medium">EGP 0.00</span>
+                        </div>
+                        <div class="flex justify-between mb-2">
+                            <span class="text-gray-400">Shipping</span>
+                            <span class="font-medium text-green-500">FREE</span>
+                        </div>
+                        <div class="flex justify-between text-lg font-bold mt-4">
+                            <span>Total</span>
+                            <span id="total-price" class="text-purple-400">EGP 0.00</span>
+                        </div>
+                    </div>
+
+                    <button id="confirm-btn" class="checkout-btn w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition">
+                        <i class="fas fa-credit-card mr-2"></i> Confirm Order
+                    </button>
+
+                    <div class="mt-4 text-center text-sm text-gray-500">
+                        <i class="fas fa-lock mr-1"></i> Secure checkout
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div id="success-modal" class="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50 hidden">
+        <div class="bg-gray-900 border border-gray-800 rounded-lg p-8 max-w-md w-full mx-4">
+            <div class="text-center">
+                <div class="w-16 h-16 bg-green-500 rounded-full flex items-center justify-center mx-auto mb-4">
+                    <i class="fas fa-check text-white text-2xl"></i>
+                </div>
+                <h3 class="text-2xl font-bold mb-2">Order Confirmed!</h3>
+                <p class="text-gray-400 mb-6">Thank you for your purchase. We'll contact you soon with shipping details.</p>
+                <button onclick="closeModal()" class="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition">
+                    Continue Shopping
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Get cart from localStorage
+        let cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const orderItemsEl = document.getElementById("order-items");
+        const subtotalEl = document.getElementById("subtotal");
+        const totalPriceEl = document.getElementById("total-price");
+        const confirmBtn = document.getElementById("confirm-btn");
+        const checkoutForm = document.getElementById("checkout-form");
+        const successModal = document.getElementById("success-modal");
+
+        // Display order items with quantity controls
+        function displayOrderItems() {
+            orderItemsEl.innerHTML = "";
+            let subtotal = 0;
+
+            if (cart.length === 0) {
+                orderItemsEl.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-shopping-cart text-3xl mb-2"></i>
+                        <p>Your cart is empty</p>
+                    </div>
+                `;
+                subtotalEl.textContent = "EGP 0.00";
+                totalPriceEl.textContent = "EGP 0.00";
+                confirmBtn.disabled = true;
+                confirmBtn.classList.add("opacity-50", "cursor-not-allowed");
+                return;
+            }
+
+            cart.forEach((item, index) => {
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
+
+                const itemEl = document.createElement("div");
+                itemEl.className = "flex justify-between items-center mb-4 pb-4 border-b border-gray-800";
+
+                itemEl.innerHTML = `
+                    <div class="flex items-center">
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg mr-4">
+                        <div>
+                            <h3 class="font-medium">${item.name}</h3>
+                            <p class="text-sm text-gray-400">EGP ${item.price.toFixed(2)}</p>
+                        </div>
+                    </div>
+                    <div class="flex items-center">
+                        <div class="flex items-center mr-4">
+                            <button onclick="updateQuantity(${index}, -1)" class="quantity-btn mr-2">
+                                <i class="fas fa-minus text-xs"></i>
+                            </button>
+                            <span class="quantity-display w-8 text-center">${item.quantity}</span>
+                            <button onclick="updateQuantity(${index}, 1)" class="quantity-btn ml-2">
+                                <i class="fas fa-plus text-xs"></i>
+                            </button>
+                        </div>
+                        <div class="font-medium w-20 text-right">EGP ${itemTotal.toFixed(2)}</div>
+                    </div>
+                `;
+
+                orderItemsEl.appendChild(itemEl);
+            });
+
+            subtotalEl.textContent = `EGP ${subtotal.toFixed(2)}`;
+            totalPriceEl.textContent = `EGP ${subtotal.toFixed(2)}`;
+        }
+
+        // Update product quantity
+        function updateQuantity(index, change) {
+            cart[index].quantity += change;
+
+            if (cart[index].quantity <= 0) {
+                if (confirm("Remove this item from your cart?")) {
+                    cart.splice(index, 1);
+                } else {
+                    cart[index].quantity = 1;
+                }
+            }
+
+            localStorage.setItem("cart", JSON.stringify(cart));
+            displayOrderItems();
+        }
+
+        // Close success modal
+        function closeModal() {
+            successModal.classList.add("hidden");
+            window.location.href = "index.html";
+        }
+
+        // Submit order to Google Sheets
+        async function submitToGoogleSheets(orderData) {
+            // Replace with your Google Sheets script URL
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbxJKRTXDubFlNgZ-Ik40knufcOIdmCAWmMavnnnhqycRN8k5t_BDQuDTiYL3R3q2pAt/exec';
+
+            try {
+                const response = await fetch(scriptURL, {
+                    method: 'POST',
+                    body: JSON.stringify(orderData),
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+
+                if (response.ok) {
+                    return true;
+                } else {
+                    throw new Error('Failed to submit to Google Sheets');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                return false;
+            }
+        }
+
+        // Confirm order
+        confirmBtn.addEventListener("click", async function() {
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
+            }
+
+            if (!checkoutForm.checkValidity()) {
+                alert("Please fill in all required fields!");
+                return;
+            }
+
+            const formData = new FormData(checkoutForm);
+            const customerData = {};
+            formData.forEach((value, key) => {
+                customerData[key] = value;
+            });
+
+            // Prepare order data
+            const orderData = {
+                customer: customerData,
+                items: cart,
+                total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
+                date: new Date().toISOString()
+            };
+
+            // Show loading state
+            confirmBtn.disabled = true;
+            confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+
+            // Submit to Google Sheets
+            const success = await submitToGoogleSheets(orderData);
+
+            if (success) {
+                // Clear cart and show success
+                localStorage.removeItem("cart");
+                cart = [];
+
+                // Show success modal
+                successModal.classList.remove("hidden");
+            } else {
+                alert("There was an error processing your order. Please try again.");
+            }
+
+            // Reset button
+            confirmBtn.disabled = false;
+            confirmBtn.innerHTML = '<i class="fas fa-credit-card mr-2"></i> Confirm Order';
+        });
+
+        // Initialize on page load
+        document.addEventListener("DOMContentLoaded", displayOrderItems);
+    </script>
+</body>
+
+</html>

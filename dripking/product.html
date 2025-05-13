@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="ar">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>تفاصيل المنتج | DRIP KING</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-900 text-white">
+    <div class="container mx-auto p-6">
+        <div id="product-details" class="text-center"></div>
+    </div>
+
+    <script src="products.js"></script>
+    <script>
+        const params = new URLSearchParams(window.location.search);
+        const productId = parseInt(params.get("id"));
+        const product = products.find(p => p.id === productId);
+        const container = document.getElementById("product-details");
+
+        if (product) {
+            container.innerHTML = `
+        <img src="${product.image}" class="w-full max-w-sm mx-auto rounded-lg mb-4" />
+        <h1 class="text-3xl font-bold mb-2">${product.name}</h1>
+        <p class="text-lg text-gray-400 mb-2">EGP ${product.price}</p>
+        <p class="text-md text-gray-300">${product.description}</p>
+      `;
+        } else {
+            container.innerHTML = `<p class="text-red-500">المنتج غير موجود</p>`;
+        }
+    </script>
+</body>
+
+</html>
