@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="ar">
 
 <head>
     <meta charset="UTF-8" />
@@ -9,7 +9,6 @@
 </head>
 
 <body class="bg-gray-900 text-white">
-
     <div class="container mx-auto p-6">
         <div id="product-details" class="text-center"></div>
     </div>
@@ -23,19 +22,15 @@
 
         if (product) {
             container.innerHTML = `
-            <img src="${product.image}" class="w-full max-w-sm mx-auto rounded-lg mb-4" alt="${product.name}" />
-            <h1 class="text-3xl font-bold mb-2">${product.name}</h1>
-            <p class="text-lg text-gray-400 mb-2">EGP ${product.price}</p>
-            <p class="text-md text-gray-300 mb-4">${product.description}</p>
-            <button class="bg-pink-500 hover:bg-pink-600 text-white py-2 px-4 rounded-full text-lg transition">
-                إضافة إلى السلة
-            </button>
-            `;
+        <img src="${product.image}" class="w-full max-w-sm mx-auto rounded-lg mb-4" />
+        <h1 class="text-3xl font-bold mb-2">${product.name}</h1>
+        <p class="text-lg text-gray-400 mb-2">EGP ${product.price}</p>
+        <p class="text-md text-gray-300">${product.description}</p>
+      `;
         } else {
             container.innerHTML = `<p class="text-red-500">المنتج غير موجود</p>`;
         }
     </script>
-
 </body>
 
 </html>
