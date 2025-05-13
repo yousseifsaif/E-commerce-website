@@ -1,10 +1,10 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>تفاصيل المنتج | DRIP KING</title>
+    <title>Product Details | DRIP KING</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
     <style>
@@ -45,6 +45,47 @@
         .quantity-btn:hover {
             background-color: #374151;
         }
+        
+        .old-price {
+            text-decoration: line-through;
+            color: #9CA3AF;
+        }
+        
+        .badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 0.25rem 0.5rem;
+            border-radius: 0.25rem;
+            font-size: 0.75rem;
+            font-weight: bold;
+            text-transform: uppercase;
+        }
+        
+        .badge.bestseller {
+            background-color: #EF4444;
+            color: white;
+        }
+        
+        .badge.sale {
+            background-color: #3B82F6;
+            color: white;
+        }
+        
+        .badge.new {
+            background-color: #10B981;
+            color: white;
+        }
+        
+        .badge.popular {
+            background-color: #F59E0B;
+            color: white;
+        }
+        
+        .badge.luxury {
+            background-color: #8B5CF6;
+            color: white;
+        }
     </style>
 </head>
 
@@ -54,7 +95,7 @@
         <div class="text-2xl font-bold text-white">DRIP KING👑</div>
         <div class="flex space-x-4">
             <a href="index.html" class="text-gray-400 hover:text-white transition">
-                <i class="fas fa-arrow-left mr-2"></i> العودة
+                <i class="fas fa-arrow-left mr-2"></i> Back
             </a>
             <a href="cart.html" class="text-gray-400 hover:text-white transition">
                 <i class="fas fa-shopping-cart"></i>
@@ -67,83 +108,122 @@
             <!-- سيتم تعبئة هذا القسم بالجافاسكريبت -->
         </div>
     </div>
-    <script src="products.js"></script>
 
     <script>
         // معالجة معرّف المنتج من URL
         const params = new URLSearchParams(window.location.search);
         const productId = parseInt(params.get("id"));
-        const product = products.find(p => p.id === productId);
-        const container = document.getElementById("product-details");
 
-        if (product) {
-            container.innerHTML = `
-                <div class="product-images">
-                    <img src="${product.image}" alt="${product.name}" class="w-full rounded-lg shadow-lg" id="main-image" />
-                    <div class="product-gallery">
-                        ${product.gallery.map(img => `
-                            <img src="${img}" alt="${product.name}" class="w-full h-24 object-cover rounded-lg" onclick="changeMainImage('${img}')" />
-                        `).join("")}
-                    </div>
-                </div>
-                
-                <div class="product-info">
-                    <h1 class="text-3xl font-bold mb-4">${product.name}</h1>
-                    <p class="text-2xl text-purple-400 mb-6">EGP ${product.price.toFixed(2)}</p>
-                    
-                    <div class="mb-6">
-                        <h3 class="text-xl font-semibold mb-3">الوصف:</h3>
-                        <p class="text-gray-400">${product.description}</p>
-                    </div>
-                    
-                    <div class="mb-6">
-                        <h3 class="text-xl font-semibold mb-3">المقاسات المتاحة:</h3>
-                        <div class="flex flex-wrap gap-2">
-                            ${product.sizes.map(size => `
-                                <button onclick="selectSize(this)" class="size-btn px-4 py-2 border border-gray-700 rounded-full hover:bg-gray-800 transition">
-                                    ${size}
-                                </button>
-                            `).join("")}
+        // جلب بيانات المنتجات من ملف products.js
+        fetch('products.js')
+            .then(response => response.text())
+            .then(text => {
+                    // استخراج مصفوفة المنتجات من النص
+                    const productsMatch = text.match(/const products = (\[.*?\])/s);
+                    if (!productsMatch) {
+                        throw new Error('Could not find products array');
+                    }
+                    const products = eval(productsMatch[1]);
+
+                    // البحث عن المنتج المطلوب
+                    const product = products.find(p => p.id === productId);
+                    const container = document.getElementById("product-details");
+
+                    if (product) {
+                        // إنشاء واجهة تفاصيل المنتج
+                        container.innerHTML = `
+                        <div class="product-images relative">
+                            ${product.badge ? `<span class="badge ${product.badge.toLowerCase()}">${product.badge}</span>` : ''}
+                            <img src="${product.image}" alt="${product.name}" class="w-full rounded-lg shadow-lg" id="main-image" />
+                            <div class="product-gallery">
+                                <img src="${product.image}" alt="${product.name}" class="w-full h-24 object-cover rounded-lg" onclick="changeMainImage('${product.image}')" />
+                                ${[1, 2, 3].map(i => `
+                                    <img src="${product.image.replace(/\d+$/, i)}" alt="${product.name} ${i}" class="w-full h-24 object-cover rounded-lg" 
+                                         onclick="changeMainImage('${product.image.replace(/\d+$/, i)}')" />
+                                `).join('')}
+                            </div>
                         </div>
-                    </div>
-                    
-                    <div class="mb-6">
-                        <h3 class="text-xl font-semibold mb-3">الكمية:</h3>
-                        <div class="flex items-center">
-                            <button onclick="updateQuantity(-1)" class="quantity-btn bg-gray-800 mr-2">
-                                <i class="fas fa-minus"></i>
+                        
+                        <div class="product-info">
+                            <h1 class="text-3xl font-bold mb-2">${product.name}</h1>
+                            <p class="text-gray-400 mb-4">${product.category}</p>
+                            
+                            <div class="flex items-center mb-6">
+                                <p class="text-2xl text-purple-400 mr-3">$${product.price.toFixed(2)}</p>
+                                ${product.oldPrice ? `<p class="text-lg old-price">$${product.oldPrice.toFixed(2)}</p>` : ''}
+                            </div>
+                            
+                            <div class="mb-6">
+                                <h3 class="text-xl font-semibold mb-3">Description:</h3>
+                                <p class="text-gray-400">${product.description}</p>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <h3 class="text-xl font-semibold mb-3">Size:</h3>
+                                <div class="flex flex-wrap gap-2">
+                                    ${['S', 'M', 'L', 'XL'].map(size => `
+                                        <button onclick="selectSize(this)" class="size-btn px-4 py-2 border border-gray-700 rounded-full hover:bg-gray-800 transition">
+                                            ${size}
+                                        </button>
+                                    `).join("")}
+                                </div>
+                            </div>
+                            
+                            <div class="mb-6">
+                                <h3 class="text-xl font-semibold mb-3">Quantity:</h3>
+                                <div class="flex items-center">
+                                    <button onclick="updateQuantity(-1)" class="quantity-btn bg-gray-800 mr-2">
+                                        <i class="fas fa-minus"></i>
+                                    </button>
+                                    <span id="quantity" class="text-xl mx-4 w-8 text-center">1</span>
+                                    <button onclick="updateQuantity(1)" class="quantity-btn bg-gray-800 ml-2">
+                                        <i class="fas fa-plus"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            
+                            <button onclick="addToCart(${productId})" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition mb-6">
+                                <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
                             </button>
-                            <span id="quantity" class="text-xl mx-4 w-8 text-center">1</span>
-                            <button onclick="updateQuantity(1)" class="quantity-btn bg-gray-800 ml-2">
-                                <i class="fas fa-plus"></i>
-                            </button>
+                            
+                            <div class="border-t border-gray-800 pt-6">
+                                <h3 class="text-xl font-semibold mb-3">Product Details:</h3>
+                                <ul class="list-disc list-inside text-gray-400">
+                                    <li class="mb-2">Category: ${product.category}</li>
+                                    <li class="mb-2">High-quality materials</li>
+                                    <li class="mb-2">Premium craftsmanship</li>
+                                    <li class="mb-2">Fast shipping available</li>
+                                </ul>
+                            </div>
                         </div>
+                    `;
+                } else {
+                    container.innerHTML = `
+                        <div class="col-span-2 text-center py-12">
+                            <i class="fas fa-exclamation-circle text-5xl text-red-500 mb-4"></i>
+                            <h2 class="text-2xl font-bold">Product Not Found</h2>
+                            <p class="text-gray-500 mt-2">Sorry, the requested product could not be found</p>
+                            <a href="index.html" class="inline-block mt-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition">
+                                Back to Store
+                            </a>
+                        </div>
+                    `;
+                }
+            })
+            .catch(error => {
+                console.error('Error loading products:', error);
+                const container = document.getElementById("product-details");
+                container.innerHTML = `
+                    <div class="col-span-2 text-center py-12">
+                        <i class="fas fa-exclamation-circle text-5xl text-red-500 mb-4"></i>
+                        <h2 class="text-2xl font-bold">Error Loading Product</h2>
+                        <p class="text-gray-500 mt-2">Sorry, there was an error loading the product details</p>
+                        <a href="index.html" class="inline-block mt-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition">
+                            Back to Store
+                        </a>
                     </div>
-                    
-                    <button onclick="addToCart()" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition">
-                        <i class="fas fa-shopping-cart mr-2"></i> أضف إلى السلة
-                    </button>
-                    
-                    <div class="mt-6 border-t border-gray-800 pt-6">
-                        <h3 class="text-xl font-semibold mb-3">تفاصيل إضافية:</h3>
-                        <ul class="list-disc list-inside text-gray-400">
-                            ${product.details.map(detail => `<li class="mb-2">${detail}</li>`).join("")}
-                        </ul>
-                    </div>
-                </div>
-            `;
-        } else {
-            container.innerHTML = `
-                <div class="col-span-2 text-center py-12">
-                    <i class="fas fa-exclamation-circle text-5xl text-red-500 mb-4"></i>
-                    <h2 class="text-2xl font-bold">المنتج غير موجود</h2>
-                    <p class="text-gray-500 mt-2">عذراً، لا يمكن العثور على المنتج المطلوب</p>
-                    <a href="index.html" class="inline-block mt-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition">
-                        العودة للمتجر
-                    </a>
-                </div>
-            `;
-        }
+                `;
+            });
 
         // تغيير الصورة الرئيسية عند النقر على الصور المصغرة
         function changeMainImage(newSrc) {
@@ -166,40 +246,44 @@
         }
 
         // إضافة إلى السلة
-        function addToCart() {
+        function addToCart(productId) {
             const selectedSize = document.querySelector(".size-btn.selected-size");
-            if (!selectedSize && product.sizes.length > 0) {
-                alert("الرجاء اختيار المقاس أولاً");
-                return;
-            }
-
-            const cart = JSON.parse(localStorage.getItem("cart")) || [];
-            const existingItem = cart.find(item => item.id === product.id && (!selectedSize || item.size === selectedSize.textContent));
+            const quantity = parseInt(document.getElementById("quantity").textContent);
             
-            if (existingItem) {
-                existingItem.quantity += quantity;
-            } else {
-                cart.push({
-                    id: product.id,
-                    name: product.name,
-                    price: product.price,
-                    image: product.image,
-                    quantity: quantity,
-                    size: selectedSize ? selectedSize.textContent : null
+            fetch('products.js')
+                .then(response => response.text())
+                .then(text => {
+                    const productsMatch = text.match(/const products = (\[.*?\])/s);
+                    if (!productsMatch) throw new Error('Could not find products array');
+                    const products = eval(productsMatch[1]);
+                    const product = products.find(p => p.id === productId);
+                    
+                    if (!product) {
+                        alert("Product not found");
+                        return;
+                    }
+
+                    const cart = JSON.parse(localStorage.getItem("cart")) || [];
+                    const existingItemIndex = cart.findIndex(item => item.id === product.id && 
+                        (!selectedSize || item.size === selectedSize.textContent));
+
+                    if (existingItemIndex >= 0) {
+                        cart[existingItemIndex].quantity += quantity;
+                    } else {
+                        cart.push({
+                            ...product,
+                            quantity: quantity,
+                            size: selectedSize ? selectedSize.textContent : null
+                        });
+                    }
+                    
+                    localStorage.setItem("cart", JSON.stringify(cart));
+                    alert(`Added ${quantity} ${product.name} to your cart!`);
+                })
+                .catch(error => {
+                    console.error("Error adding to cart:", error);
+                    alert("Error adding product to cart");
                 });
-            }
-            
-            localStorage.setItem("cart", JSON.stringify(cart));
-            
-            alert("تمت إضافة المنتج إلى سلة التسوق");
-            updateCartCount();
-        }
-
-        // تحديث عداد السلة (اختياري)
-        function updateCartCount() {
-            const cart = JSON.parse(localStorage.getItem("cart")) || [];
-            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-            // يمكنك هنا تحديث أي عداد للسلة في الصفحة
         }
     </script>
 </body>

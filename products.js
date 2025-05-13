@@ -2,20 +2,29 @@ const products = [{
         id: 1,
         name: "Urban Graphic Tee",
         price: 29.99,
+        oldPrice: 39.99, // سعر قديم إذا كان في عرض
         image: "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9",
         category: "T-Shirts",
-        badge: "Bestseller",
-        description: "Soft cotton t-shirt with urban graphic print"
+        badge: "Bestseller", // يمكن أن يكون: Bestseller, Sale, New, Popular, Luxury
+        description: "Soft cotton t-shirt with urban graphic print",
+        sizes: ["S", "M", "L", "XL"],
+        colors: ["Black", "White", "Gray"],
+        material: "100% Cotton",
+        shippingInfo: "Ships in 1-2 business days"
     },
     {
         id: 2,
-        name: "Classic Denim Jacket",
-        price: 89.99,
-        oldPrice: 109.99,
-        image: "https://images.unsplash.com/photo-1591047139829-d91aecb6caea",
-        category: "Jackets",
-        badge: "Sale",
-        description: "Timeless denim jacket with modern fit"
+        name: "Urban Graphic Tee",
+        price: 29.99,
+        oldPrice: 39.99, // سعر قديم إذا كان في عرض
+        image: "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9",
+        category: "T-Shirts",
+        badge: "Bestseller", // يمكن أن يكون: Bestseller, Sale, New, Popular, Luxury
+        description: "Soft cotton t-shirt with urban graphic print",
+        sizes: ["S", "M", "L", "XL"],
+        colors: ["Black", "White", "Gray"],
+        material: "100% Cotton",
+        shippingInfo: "Ships in 1-2 business days"
     },
     {
         id: 3,
