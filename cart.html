@@ -260,25 +260,28 @@
                 customerData[key] = value;
             });
 
-            // Prepare order data
+            // تحضير بيانات الطلب
             const orderData = {
-                customer: customerData,
-                items: cart,
-                total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0),
-                date: new Date().toISOString()
+                name: customerData.name,
+                email: customerData.email,
+                phone: customerData.phone,
+                address: customerData.address,
+                notes: customerData.notes,
+                cart: cart,
+                total: cart.reduce((sum, item) => sum + (item.price * item.quantity), 0)
             };
 
-            // Show loading state
+            // عرض حالة التحميل
             confirmBtn.disabled = true;
-            confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
+            confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> جاري المعالجة...';
 
             try {
                 const response = await axios.post(
-                    'https://script.google.com/macros/s/AKfycbxnxYwiyP7eBrRLSSXyz7hY8bWijmPfx6AXmDtBFF5HABxl1teoWGoLYhWnN5gElCq5/exec',
-                    orderData,
+                    'https://script.google.com/macros/s/AKfycbwf7Swk3kUdc0qpOjo4TLyHhYaueC3ljdgkYnGBaD06bgLL0iywcF7o1jldw4sSXwlP/exec',
+                    { data: JSON.stringify(orderData) },
                     {
                         headers: {
-                            'Content-Type': 'application/json'
+                            'Content-Type': 'application/x-www-form-urlencoded'
                         }
                     }
                 );
@@ -288,17 +291,17 @@
                     cart = [];
                     successModal.classList.remove("hidden");
                 } else {
-                    throw new Error("Failed to submit order");
+                    throw new Error(response.data.message || "فشل في إرسال الطلب");
                 }
             } catch (error) {
-                console.error("Order processing error:", error);
-                alert("Your order has been received! (You may see a technical message but your order is confirmed)");
+                console.error("خطأ في معالجة الطلب:", error);
+                alert("تم استلام طلبك! (قد ترى رسالة تقنية ولكن طلبك مؤكد)");
                 localStorage.removeItem("cart");
                 cart = [];
                 successModal.classList.remove("hidden");
             } finally {
                 confirmBtn.disabled = false;
-                confirmBtn.innerHTML = '<i class="fas fa-credit-card mr-2"></i> Confirm Order';
+                confirmBtn.innerHTML = '<i class="fas fa-credit-card mr-2"></i> تأكيد الطلب';
             }
         });
 
