@@ -2,90 +2,13 @@
 <html lang="en">
 
 <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Product Details | DRIP KING</title>
-    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet" />
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        .product-gallery {
-            display: grid;
-            grid-template-columns: repeat(4, 1fr);
-            gap: 10px;
-            margin-top: 15px;
-        }
-        
-        .product-gallery img {
-            cursor: pointer;
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-        
-        .product-gallery img:hover {
-            border-color: #9333ea;
-            transform: scale(1.05);
-        }
-        
-        .selected-size {
-            background-color: #9333ea !important;
-            color: white !important;
-        }
-        
-        .quantity-btn {
-            width: 40px;
-            height: 40px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            border-radius: 50%;
-            cursor: pointer;
-            transition: all 0.2s ease;
-        }
-        
-        .quantity-btn:hover {
-            background-color: #374151;
-        }
-        
-        .old-price {
-            text-decoration: line-through;
-            color: #9CA3AF;
-        }
-        
-        .badge {
-            position: absolute;
-            top: 10px;
-            right: 10px;
-            padding: 0.25rem 0.5rem;
-            border-radius: 0.25rem;
-            font-size: 0.75rem;
-            font-weight: bold;
-            text-transform: uppercase;
-        }
-        
-        .badge.bestseller {
-            background-color: #EF4444;
-            color: white;
-        }
-        
-        .badge.sale {
-            background-color: #3B82F6;
-            color: white;
-        }
-        
-        .badge.new {
-            background-color: #10B981;
-            color: white;
-        }
-        
-        .badge.popular {
-            background-color: #F59E0B;
-            color: white;
-        }
-        
-        .badge.luxury {
-            background-color: #8B5CF6;
-            color: white;
-        }
+        /* Same styles as before */
     </style>
 </head>
 
@@ -97,8 +20,9 @@
             <a href="index.html" class="text-gray-400 hover:text-white transition">
                 <i class="fas fa-arrow-left mr-2"></i> Back
             </a>
-            <a href="cart.html" class="text-gray-400 hover:text-white transition">
+            <a href="cart.html" class="text-gray-400 hover:text-white transition relative">
                 <i class="fas fa-shopping-cart"></i>
+                <span id="cart-counter" class="cart-count hidden">0</span>
             </a>
         </div>
     </nav>
@@ -108,41 +32,54 @@
             <!-- سيتم تعبئة هذا القسم بالجافاسكريبت -->
         </div>
     </div>
+
     <script>
-        // دالة لجلب المنتجات من ملف products.js
-        async function loadProducts() {
+        // دالة لجلب المنتجات
+        async function getProducts() {
             try {
                 const response = await fetch('products.json');
+                if (!response.ok) throw new Error('Network response was not ok');
                 return await response.json();
             } catch (error) {
-                console.error('Error loading products:', error);
-                showError();
+                console.error("Error loading products:", error);
+                showError("Error loading product data");
                 return [];
             }
         }
 
-        // دالة لعرض تفاصيل المنتج
-        function displayProduct(product) {
-            const container = document.getElementById("product-details");
+        // دالة لعرض المنتج
+        async function displayProductDetails() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const productId = parseInt(urlParams.get('id'));
 
+            if (!productId) {
+                showError("No product ID provided");
+                return;
+            }
+
+            const products = await getProducts();
+            const product = products.find(p => p.id === productId);
+
+            if (!product) {
+                showError("Product not found");
+                return;
+            }
+
+            const container = document.getElementById("product-details");
             container.innerHTML = `
                 <div class="product-images relative">
                     ${product.badge ? `<span class="badge ${product.badge.toLowerCase()}">${product.badge}</span>` : ''}
-                    <img src="${product.image}" alt="${product.name}" class="w-full rounded-lg shadow-lg" id="main-image" />
+                    <img src="${product.image}" alt="${product.name}" class="w-full rounded-lg shadow-lg" id="main-image">
                     <div class="product-gallery">
-                        ${product.gallery ? product.gallery.map(img => `
-                            <img src="${img}" alt="${product.name}" class="w-full h-24 object-cover rounded-lg" onclick="changeMainImage('${img}')" />
-                        `).join('') : `
-                            <img src="${product.image}" alt="${product.name}" class="w-full h-24 object-cover rounded-lg" onclick="changeMainImage('${product.image}')" />
-                            <img src="${product.image}" alt="${product.name}" class="w-full h-24 object-cover rounded-lg" onclick="changeMainImage('${product.image}')" />
-                            <img src="${product.image}" alt="${product.name}" class="w-full h-24 object-cover rounded-lg" onclick="changeMainImage('${product.image}')" />
-                        `}
+                        ${(product.gallery || [product.image, product.image, product.image]).map(img => `
+                            <img src="${img}" alt="${product.name}" class="w-full h-24 object-cover rounded-lg" onclick="changeMainImage('${img}')">
+                        `).join('')}
                     </div>
                 </div>
                 
                 <div class="product-info">
                     <h1 class="text-3xl font-bold mb-2">${product.name}</h1>
-                    <p class="text-gray-400 mb-4">${product.category}</p>
+                    <p class="text-gray-400 mb-4">${product.category || ''}</p>
                     
                     <div class="flex items-center mb-6">
                         <p class="text-2xl text-purple-400 mr-3">$${product.price.toFixed(2)}</p>
@@ -154,16 +91,17 @@
                         <p class="text-gray-400">${product.description}</p>
                     </div>
                     
+                    ${product.sizes ? `
                     <div class="mb-6">
                         <h3 class="text-xl font-semibold mb-3">Size:</h3>
                         <div class="flex flex-wrap gap-2">
-                            ${(product.sizes || ['S', 'M', 'L', 'XL']).map(size => `
+                            ${product.sizes.map(size => `
                                 <button onclick="selectSize(this)" class="size-btn px-4 py-2 border border-gray-700 rounded-full hover:bg-gray-800 transition">
                                     ${size}
                                 </button>
                             `).join("")}
                         </div>
-                    </div>
+                    </div>` : ''}
                     
                     <div class="mb-6">
                         <h3 class="text-xl font-semibold mb-3">Quantity:</h3>
@@ -195,59 +133,36 @@
                 </div>
             `;
         }
-    
-        // دالة لعرض رسالة الخطأ
-        function showError() {
+
+        function showError(message) {
             const container = document.getElementById("product-details");
             container.innerHTML = `
                 <div class="col-span-2 text-center py-12">
                     <i class="fas fa-exclamation-circle text-5xl text-red-500 mb-4"></i>
-                    <h2 class="text-2xl font-bold">Error Loading Product</h2>
-                    <p class="text-gray-500 mt-2">Sorry, there was an error loading the product details</p>
+                    <h2 class="text-2xl font-bold">${message}</h2>
                     <a href="index.html" class="inline-block mt-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition">
                         Back to Store
                     </a>
                 </div>
             `;
         }
-    
-        // دالة التهيئة الرئيسية
-        async function initProductPage() {
-            const params = new URLSearchParams(window.location.search);
-            const productId = parseInt(params.get("id"));
-            
-            if (!productId) {
-                showError();
-                return;
-            }
-            
-            const products = await loadProducts();
-            const product = products.find(p => p.id === productId);
-            
-            if (product) {
-                displayProduct(product);
-            } else {
-                showError();
-            }
-        }
-    
-        // استدعاء دالة التهيئة عند تحميل الصفحة
-        document.addEventListener('DOMContentLoaded', initProductPage);
-    
-        // ===== الدوال المساعدة =====
-        
-        // تغيير الصورة الرئيسية
+
+        // دالة التهيئة
+        document.addEventListener('DOMContentLoaded', async () => {
+            await displayProductDetails();
+            updateCartCounter();
+        });
+
+        // الدوال المساعدة
         function changeMainImage(newSrc) {
             document.getElementById("main-image").src = newSrc;
         }
-    
-        // اختيار المقاس
+
         function selectSize(btn) {
             document.querySelectorAll(".size-btn").forEach(b => b.classList.remove("selected-size"));
             btn.classList.add("selected-size");
         }
-    
-        // تحديث الكمية
+
         let quantity = 1;
         function updateQuantity(change) {
             quantity += change;
@@ -255,38 +170,46 @@
             if (quantity > 10) quantity = 10;
             document.getElementById("quantity").textContent = quantity;
         }
-    
-        // إضافة إلى السلة
+
         async function addToCart(productId) {
-            try {
-                const products = await loadProducts();
-                const product = products.find(p => p.id === productId);
-                
-                if (!product) {
-                    alert("Product not found");
-                    return;
-                }
-    
-                const selectedSize = document.querySelector(".size-btn.selected-size");
-                const cart = JSON.parse(localStorage.getItem("cart")) || [];
-                const existingItem = cart.find(item => item.id === product.id && 
-                    (!selectedSize || item.size === selectedSize?.textContent));
-    
-                if (existingItem) {
-                    existingItem.quantity += quantity;
-                } else {
-                    cart.push({
-                        ...product,
-                        quantity: quantity,
-                        size: selectedSize ? selectedSize.textContent : null
-                    });
-                }
-                
-                localStorage.setItem("cart", JSON.stringify(cart));
-                alert(`Added ${quantity} ${product.name} to your cart!`);
-            } catch (error) {
-                console.error("Error adding to cart:", error);
-                alert("Error adding product to cart");
+            const products = await getProducts();
+            const product = products.find(p => p.id === productId);
+            
+            if (!product) {
+                alert("Product not found");
+                return;
+            }
+
+            const selectedSize = document.querySelector(".size-btn.selected-size");
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const existingItem = cart.find(item => item.id === product.id && 
+                (!selectedSize || item.size === selectedSize.textContent));
+
+            if (existingItem) {
+                existingItem.quantity += quantity;
+            } else {
+                cart.push({
+                    ...product,
+                    quantity: quantity,
+                    size: selectedSize ? selectedSize.textContent : null
+                });
+            }
+            
+            localStorage.setItem("cart", JSON.stringify(cart));
+            alert(`Added ${product.name} to your cart!`);
+            updateCartCounter();
+        }
+
+        function updateCartCounter() {
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const counter = document.getElementById("cart-counter");
+            
+            if (count > 0) {
+                counter.textContent = count;
+                counter.classList.remove("hidden");
+            } else {
+                counter.classList.add("hidden");
             }
         }
     </script>

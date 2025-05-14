@@ -20,12 +20,14 @@ const products = [{
         ]
     },
     {
-        id: 2,
-        "name": "Urban Graphic Tee",
-        "price": 29.99,
-        "image": "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9",
-        "category": "T-Shirts"
 
+        id: 2,
+        name: "Urban Graphic Tee",
+        price: 29.99,
+        image: "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9",
+        category: "T-Shirts",
+        description: "Soft cotton t-shirt with urban graphic print",
+        sizes: ["S", "M", "L", "XL"]
     },
     {
         id: 3,
