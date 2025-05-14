@@ -176,8 +176,8 @@
                         <p>Empty Cart</p>
                     </div>
                 `;
-                subtotalEl.textContent = "$0.00";
-                totalPriceEl.textContent = "$0.00";
+                subtotalEl.textContent = "EGP 0.00";
+                totalPriceEl.textContent = "EGP 0.00";
                 confirmBtn.disabled = true;
                 confirmBtn.classList.add("opacity-50", "cursor-not-allowed");
                 return;
@@ -216,8 +216,8 @@
                 orderItemsEl.appendChild(itemEl);
             });
 
-            subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
-            totalPriceEl.textContent = `$${subtotal.toFixed(2)}`;
+            subtotalEl.textContent = `EGP${subtotal.toFixed(2)}`;
+            totalPriceEl.textContent = `EGP${subtotal.toFixed(2)}`;
         }
 
         // Update product quantity
