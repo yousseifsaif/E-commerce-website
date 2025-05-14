@@ -27,19 +27,26 @@ async function displayProducts() {
     }
 
     productsContainer.innerHTML = products.map(product => `
-        <div class="product-card bg-gray-900 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition">
-            <a href="product.html?id=${product.id}">
-                <img src="${product.image}" alt="${product.name}" class="w-full h-64 object-cover">
-                <div class="p-4">
-                    <h3 class="text-lg font-semibold">${product.name}</h3>
-                    <div class="flex justify-between items-center mt-2">
-                        <p class="text-purple-400">$${product.price.toFixed(2)}</p>
-                        ${product.badge ? `<span class="badge ${product.badge.toLowerCase()}">${product.badge}</span>` : ''}
-                    </div>
+    <div class="product-card bg-gray-900 rounded-lg overflow-hidden shadow-lg hover:shadow-xl transition flex flex-col">
+        <a href="product.html?id=${product.id}" class="block">
+            <img src="${product.image}" alt="${product.name}" class="w-full h-64 object-cover">
+            <div class="p-4">
+                <h3 class="text-lg font-semibold">${product.name}</h3>
+                <div class="flex justify-between items-center mt-2">
+                    <p class="text-purple-400">$${product.price.toFixed(2)}</p>
+                    ${product.badge ? `<span class="text-xs px-2 py-1 bg-purple-600 text-white rounded">${product.badge}</span>` : ''}
                 </div>
-            </a>
-        </div>
-    `).join('');
+            </div>
+        </a>
+        <button 
+            onclick="addToCart(${product.id})" 
+            class="mt-auto bg-purple-700 hover:bg-purple-800 text-white w-full py-2 font-semibold transition"
+        >
+            <i class="fas fa-cart-plus mr-2"></i>Add to Cart
+        </button>
+    </div>
+`).join('');
+
 
     updateCartCounter();
 }
@@ -59,6 +66,25 @@ function updateCartCounter() {
         }
     });
 }
+function addToCart(productId) {
+    fetchProducts().then(products => {
+        const product = products.find(p => p.id === productId);
+        if (!product) return;
+
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const existingItem = cart.find(item => item.id === product.id);
+
+        if (existingItem) {
+            existingItem.quantity += 1;
+        } else {
+            cart.push({ ...product, quantity: 1 });
+        }
+
+        localStorage.setItem("cart", JSON.stringify(cart));
+        updateCartCounter();
+    });
+}
+
 
 // تهيئة الصفحة
 document.addEventListener('DOMContentLoaded', () => {
