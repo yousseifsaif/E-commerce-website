@@ -50,6 +50,16 @@
         
         .quantity-btn:hover {
             background-color: #374151;
+            transform: scale(1.1);
+        }
+        
+        .add-to-cart-btn {
+            transition: all 0.3s ease;
+        }
+        
+        .add-to-cart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(147, 51, 234, 0.2);
         }
         
         .main-image-container {
@@ -59,6 +69,11 @@
             align-items: center;
             justify-content: center;
             overflow: hidden;
+            transition: all 0.3s ease;
+        }
+        
+        .main-image-container:hover {
+            transform: scale(1.02);
         }
         
         .main-image {
@@ -66,6 +81,7 @@
             width: auto;
             max-width: 100%;
             object-fit: contain;
+            transition: all 0.3s ease;
         }
         
         @media (max-width: 1024px) {
@@ -192,7 +208,7 @@
                         </div>
                     </div>
                     
-                    <button onclick="addToCart(${product.id})" class="w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition mb-6">
+                    <button onclick="addToCart(${product.id})" class="add-to-cart-btn w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition mb-6">
                         <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
                     </button>
                     

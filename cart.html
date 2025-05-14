@@ -173,11 +173,11 @@
                 orderItemsEl.innerHTML = `
                     <div class="text-center py-8 text-gray-500">
                         <i class="fas fa-shopping-cart text-3xl mb-2"></i>
-                        <p>Your cart is empty</p>
+                        <p>سلة المشتريات فارغة</p>
                     </div>
                 `;
-                subtotalEl.textContent = "EGP 0.00";
-                totalPriceEl.textContent = "EGP 0.00";
+                subtotalEl.textContent = "$0.00";
+                totalPriceEl.textContent = "$0.00";
                 confirmBtn.disabled = true;
                 confirmBtn.classList.add("opacity-50", "cursor-not-allowed");
                 return;
@@ -216,8 +216,8 @@
                 orderItemsEl.appendChild(itemEl);
             });
 
-            subtotalEl.textContent = `EGP ${subtotal.toFixed(2)}`;
-            totalPriceEl.textContent = `EGP ${subtotal.toFixed(2)}`;
+            subtotalEl.textContent = `$${subtotal.toFixed(2)}`;
+            totalPriceEl.textContent = `$${subtotal.toFixed(2)}`;
         }
 
         // Update product quantity
@@ -225,7 +225,7 @@
             cart[index].quantity += change;
 
             if (cart[index].quantity <= 0) {
-                if (confirm("Remove this item from your cart?")) {
+                if (confirm("هل أنت متأكد من حذف هذا المنتج من السلة؟")) {
                     cart.splice(index, 1);
                 } else {
                     cart[index].quantity = 1;
