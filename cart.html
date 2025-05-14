@@ -171,6 +171,61 @@
 
             if (cart.length === 0) {
                 orderItemsEl.innerHTML = `
+            <div class="text-center py-8 text-gray-500">
+                <i class="fas fa-shopping-cart text-3xl mb-2"></i>
+                <p>Your cart is empty</p>
+            </div>
+        `;
+                subtotalEl.textContent = "EGP 0.00";
+                totalPriceEl.textContent = "EGP 0.00";
+                confirmBtn.disabled = true;
+                confirmBtn.classList.add("opacity-50", "cursor-not-allowed");
+                return;
+            }
+
+            cart.forEach((item, index) => {
+                        const itemTotal = item.price * item.quantity;
+                        subtotal += itemTotal;
+
+                        const itemEl = document.createElement("div");
+                        itemEl.className = "flex justify-between items-start mb-4 pb-4 border-b border-gray-800";
+
+                        itemEl.innerHTML = `
+            <div class="flex items-start flex-1 min-w-0">
+                <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg mr-4 flex-shrink-0">
+                <div class="cart-item-details">
+                    <h3 class="font-medium truncate">${item.name}</h3>
+                    ${item.size ? `<p class="text-sm text-gray-400">Size: ${item.size}</p>` : ''}
+                    <p class="text-sm text-gray-400">EGP ${item.price.toFixed(2)}</p>
+                </div>
+            </div>
+            <div class="flex items-center ml-4">
+                <div class="flex items-center mr-4">
+                    <button onclick="updateQuantity(${index}, -1)" class="quantity-btn mr-2">
+                        <i class="fas fa-minus text-xs"></i>
+                    </button>
+                    <span class="quantity-display w-8 text-center">${item.quantity}</span>
+                    <button onclick="updateQuantity(${index}, 1)" class="quantity-btn ml-2">
+                        <i class="fas fa-plus text-xs"></i>
+                    </button>
+                </div>
+                <div class="font-medium w-20 text-right">EGP ${itemTotal.toFixed(2)}</div>
+            </div>
+        `;
+
+        orderItemsEl.appendChild(itemEl);
+    });
+
+    subtotalEl.textContent = `EGP ${subtotal.toFixed(2)}`;
+    totalPriceEl.textContent = `EGP ${subtotal.toFixed(2)}`;
+    confirmBtn.disabled = false;
+    confirmBtn.classList.remove("opacity-50", "cursor-not-allowed");
+}
+            orderItemsEl.innerHTML = "";
+            let subtotal = 0;
+
+            if (cart.length === 0) {
+                orderItemsEl.innerHTML = `
                     <div class="text-center py-8 text-gray-500">
                         <i class="fas fa-shopping-cart text-3xl mb-2"></i>
                         <p>Your cart is empty</p>
@@ -260,22 +315,33 @@
         }
 
         // Confirm order
-        confirmBtn.addEventListener("click", async function() {
-            if (cart.length === 0) {
-                alert("Your cart is empty!");
-                return;
-            }
+        confirmBtn.addEventListener("click", function () {
+    if (!checkoutForm.reportValidity()) return;
 
-            if (!checkoutForm.checkValidity()) {
-                alert("Please fill in all required fields!");
-                return;
-            }
+    const formData = new FormData(checkoutForm);
+    const data = {
+        name: formData.get("name"),
+        email: formData.get("email"),
+        phone: formData.get("phone"),
+        address: formData.get("address"),
+        notes: formData.get("notes") || "",
+        cart: cart,
+        total: subtotalEl.textContent,
+    };
 
-            const formData = new FormData(checkoutForm);
-            const customerData = {};
-            formData.forEach((value, key) => {
-                customerData[key] = value;
-            });
+    axios.post("https://script.google.com/macros/s/AKfycbyUmvl3BbUIeaBlimaG3u7Q4m1IZPRH_ClW6MlxPO1oopG0I5RE6nqQkKOJ_t8wZq2A/exec", data)
+        .then((res) => {
+            if (res.data.status === "success") {
+                successModal.classList.remove("hidden");
+                cart = [];
+                localStorage.removeItem("cart");
+            }
+        })
+        .catch((error) => {
+            console.error("Error submitting order:", error);
+            alert("Something went wrong. Please try again.");
+        });
+});
 
             // Prepare order data
             const orderData = {
