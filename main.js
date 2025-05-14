@@ -7,7 +7,7 @@ async function fetchProducts() {
         return data;
     } catch (error) {
         console.error("Error loading products:", error);
-        showError("Please Try Again");
+        showError("Please Try");
         return [];
     }
 }
@@ -44,7 +44,7 @@ async function displayProducts() {
                 <div class="p-4">
                     <h3 class="text-lg font-semibold">${product.name}</h3>
                     <div class="flex justify-between items-center mt-2">
-                        <p class="text-purple-400">$${product.price.toFixed(2)}</p>
+                        <p class="text-purple-400">EGP${product.price.toFixed(2)}</p>
                         ${product.badge ? `<span class="text-xs px-2 py-1 bg-purple-600 text-white rounded">${product.badge}</span>` : ''}
                     </div>
                 </div>
