@@ -218,16 +218,20 @@
 
             subtotalEl.textContent = `EGP ${subtotal.toFixed(2)}`;
             totalPriceEl.textContent = `EGP ${subtotal.toFixed(2)}`;
-            confirmBtn.disabled = false;
-            confirmBtn.classList.remove("opacity-50", "cursor-not-allowed");
         }
 
         // Update product quantity
         function updateQuantity(index, change) {
             cart[index].quantity += change;
+
             if (cart[index].quantity <= 0) {
-                cart.splice(index, 1);
+                if (confirm("Remove this item from your cart?")) {
+                    cart.splice(index, 1);
+                } else {
+                    cart[index].quantity = 1;
+                }
             }
+
             localStorage.setItem("cart", JSON.stringify(cart));
             displayOrderItems();
         }
@@ -240,7 +244,7 @@
 
         // Submit order to Google Sheets
         async function submitToGoogleSheets(orderData) {
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbxsucW9zhZIVU90YFq-bLm2YSKrzc_10lx2UrixPecTikmn57dnrSC1YVbY9nPlAxOZ/exec';
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbxhiJ0jG6qaYV0TNeCN4hMC6TxhYHBWfOE7Uq6at40xanStQPIrECMhWyT6YRSdNb9F/exec';
 
             try {
                 console.log("Submitting order:", orderData);
@@ -259,16 +263,22 @@
         }
 
         // Confirm order
-        confirmBtn.addEventListener("click", (e) => {
-            e.preventDefault();
-            if (!checkoutForm.reportValidity()) return;
-
-            // جمع بيانات النموذج
-            const formData = new FormData(checkoutForm);
-            const customerInfo = {};
-            for (const [key, value] of formData.entries()) {
-                customerInfo[key] = value.trim();
+        confirmBtn.addEventListener("click", async function() {
+            if (cart.length === 0) {
+                alert("Your cart is empty!");
+                return;
             }
+
+            if (!checkoutForm.checkValidity()) {
+                alert("Please fill in all required fields!");
+                return;
+            }
+
+            const formData = new FormData(checkoutForm);
+            const customerData = {};
+            formData.forEach((value, key) => {
+                customerData[key] = value;
+            });
 
             // Prepare order data
             const orderData = {
@@ -303,7 +313,5 @@
         document.addEventListener("DOMContentLoaded", displayOrderItems);
     </script>
 </body>
-
-</html>
 
 </html>
