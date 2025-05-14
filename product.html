@@ -22,6 +22,7 @@
             object-fit: cover;
             height: 100px;
             width: 100%;
+            border-radius: 0.5rem;
         }
         
         .product-gallery img:hover {
@@ -51,22 +52,31 @@
             background-color: #374151;
         }
         
-        .main-image {
-            height: 500px;
-            object-fit: contain;
+        .main-image-container {
             background-color: #111827;
             border-radius: 0.5rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
+        }
+        
+        .main-image {
+            max-height: 500px;
+            width: auto;
+            max-width: 100%;
+            object-fit: contain;
         }
         
         @media (max-width: 1024px) {
             .main-image {
-                height: 400px;
+                max-height: 400px;
             }
         }
         
         @media (max-width: 768px) {
             .main-image {
-                height: 300px;
+                max-height: 300px;
             }
         }
     </style>
@@ -128,14 +138,13 @@
             const container = document.getElementById("product-details");
             container.innerHTML = `
                 <div class="product-images">
-                    <div class="relative bg-gray-900 rounded-lg p-4 flex items-center justify-center">
-                        // ${product.badge ? `<span class="badge ${product.badge.toLowerCase()}">${product.badge}</span>` : ''}
+                    <div class="main-image-container">
                         <img src="${product.image}" alt="${product.name}" class="main-image" id="main-image">
                     </div>
                     <div class="product-gallery mt-4">
                         ${(product.gallery || [product.image, product.image, product.image]).map((img, index) => `
                             <img src="${img}" alt="${product.name} ${index+1}" 
-                                 class="rounded-lg ${index === 0 ? 'border-2 border-purple-500' : 'border border-gray-700'}" 
+                                 class="${index === 0 ? 'border-2 border-purple-500' : 'border border-gray-700'}" 
                                  onclick="changeMainImage('${img}', this)">
                         `).join('')}
                     </div>

@@ -8,11 +8,7 @@
         "badge": "Bestseller",
         "description": "Soft cotton t-shirt with urban graphic print",
         "sizes": ["S", "M", "L", "XL"],
-        "details": [
-            "100% Cotton",
-            "Premium printing",
-            "Machine wash cold"
-        ],
+        "details": ["100% Cotton", "Premium printing", "Machine wash cold"],
         "gallery": [
             "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9",
             "https://images.unsplash.com/photo-1529374255404-311a2a4f1fd9",
@@ -28,10 +24,197 @@
         "badge": "New",
         "description": "Timeless denim jacket with modern fit",
         "sizes": ["M", "L", "XL"],
-        "details": [
-            "100% Cotton denim",
-            "Premium hardware",
-            "Machine wash cold"
-        ]
+        "details": ["100% Cotton denim", "Premium hardware", "Machine wash cold"]
+    },
+    {
+        "id": 3,
+        "name": "Relaxed Fit Hoodie",
+        "price": 49.99,
+        "oldPrice": 59.99,
+        "image": "https://images.unsplash.com/photo-1585386959984-a4155224a1a0",
+        "category": "Hoodies",
+        "badge": "Limited",
+        "description": "Cozy fleece-lined hoodie with relaxed fit",
+        "sizes": ["S", "M", "L", "XL"],
+        "details": ["Fleece interior", "Drawstring hood", "Machine washable"]
+    },
+    {
+        "id": 4,
+        "name": "Essential Joggers",
+        "price": 34.99,
+        "image": "https://images.unsplash.com/photo-1600185364647-2f1183466aa2",
+        "category": "Pants",
+        "badge": "Trending",
+        "description": "Lightweight joggers perfect for daily wear",
+        "sizes": ["S", "M", "L", "XL"],
+        "details": ["Tapered fit", "Elastic waistband", "Breathable fabric"]
+    },
+    {
+        "id": 5,
+        "name": "Streetwear Cap",
+        "price": 19.99,
+        "image": "https://images.unsplash.com/photo-1610491422224-6b55b25a86f4",
+        "category": "Accessories",
+        "badge": "Hot",
+        "description": "Snapback cap with embroidered logo",
+        "sizes": ["One Size"],
+        "details": ["Adjustable fit", "Embroidered design", "100% Cotton"]
+    },
+    {
+        "id": 6,
+        "name": "Minimalist Tee",
+        "price": 24.99,
+        "image": "https://images.unsplash.com/photo-1522335789203-aabd1fc54bc9",
+        "category": "T-Shirts",
+        "description": "Classic crewneck tee for everyday wear",
+        "sizes": ["S", "M", "L", "XL"],
+        "details": ["Slim fit", "Pre-shrunk", "Machine washable"]
+    },
+    {
+        "id": 7,
+        "name": "Oversized Flannel Shirt",
+        "price": 44.99,
+        "image": "https://images.unsplash.com/photo-1512436991641-6745cdb1723f",
+        "category": "Shirts",
+        "badge": "Bestseller",
+        "description": "Plaid flannel shirt for casual layering",
+        "sizes": ["M", "L", "XL"],
+        "details": ["Soft cotton blend", "Button closure", "Warm and breathable"]
+    },
+    {
+        "id": 8,
+        "name": "Distressed Skinny Jeans",
+        "price": 64.99,
+        "image": "https://images.unsplash.com/photo-1618354691213-79c2b8a1a772",
+        "category": "Pants",
+        "description": "Trendy ripped jeans with stretch fit",
+        "sizes": ["S", "M", "L", "XL"],
+        "details": ["Stretch denim", "Zipper fly", "Distressed detail"]
+    },
+    {
+        "id": 9,
+        "name": "Windbreaker Jacket",
+        "price": 59.99,
+        "image": "https://images.unsplash.com/photo-1619645428364-cde2a6ed4f4e",
+        "category": "Jackets",
+        "badge": "New Arrival",
+        "description": "Lightweight windbreaker with urban edge",
+        "sizes": ["M", "L", "XL"],
+        "details": ["Water-resistant", "Zipper pockets", "Hooded design"]
+    },
+    {
+        "id": 10,
+        "name": "Vintage Washed Tee",
+        "price": 27.99,
+        "image": "https://images.unsplash.com/photo-1517816743773-6e0fd518b4a6",
+        "category": "T-Shirts",
+        "description": "Faded color with a soft feel and relaxed cut",
+        "sizes": ["S", "M", "L", "XL"],
+        "details": ["Vintage wash", "Loose fit", "Lightweight cotton"]
+    },
+    {
+        "id": 11,
+        "name": "Monogram Beanie",
+        "price": 14.99,
+        "image": "https://images.unsplash.com/photo-1602810318294-b72f79898d86",
+        "category": "Accessories",
+        "description": "Knitted beanie with monogram label",
+        "sizes": ["One Size"],
+        "details": ["Wool blend", "Stretch fit", "Ribbed knit"]
+    },
+    {
+        "id": 12,
+        "name": "Premium Zip Hoodie",
+        "price": 54.99,
+        "oldPrice": 64.99,
+        "image": "https://images.unsplash.com/photo-1618354691213-79c2b8a1a772",
+        "category": "Hoodies",
+        "badge": "Exclusive",
+        "description": "Thick zip hoodie for cold seasons",
+        "sizes": ["S", "M", "L", "XL"],
+        "details": ["Fleece-lined", "Sturdy zipper", "Kangaroo pocket"]
+    },
+    {
+        "id": 13,
+        "name": "Cropped Cargo Pants",
+        "price": 49.99,
+        "image": "https://images.unsplash.com/photo-1612444457074-54ab9e3aa7de",
+        "category": "Pants",
+        "description": "Functional cargo style with cropped cut",
+        "sizes": ["M", "L", "XL"],
+        "details": ["Multiple pockets", "Relaxed fit", "Adjustable cuffs"]
+    },
+    {
+        "id": 14,
+        "name": "Graphic Long Sleeve",
+        "price": 31.99,
+        "image": "https://images.unsplash.com/photo-1602333868321-cb69b3a74205",
+        "category": "T-Shirts",
+        "badge": "Limited",
+        "description": "Long sleeve shirt with modern graphics",
+        "sizes": ["S", "M", "L", "XL"],
+        "details": ["Soft touch", "Printed design", "Ribbed cuffs"]
+    },
+    {
+        "id": 15,
+        "name": "Retro Colorblock Jacket",
+        "price": 74.99,
+        "image": "https://images.unsplash.com/photo-1603357466791-b7e13ff4e2f1",
+        "category": "Jackets",
+        "badge": "Trending",
+        "description": "Bold retro design with vibrant blocks",
+        "sizes": ["M", "L", "XL"],
+        "details": ["Poly shell", "Mesh lining", "Elastic cuffs"]
+    },
+    {
+        "id": 16,
+        "name": "Cotton Tank Top",
+        "price": 18.99,
+        "image": "https://images.unsplash.com/photo-1568254183919-78a4f43a7163",
+        "category": "T-Shirts",
+        "description": "Sleeveless tank for workouts or layering",
+        "sizes": ["S", "M", "L", "XL"],
+        "details": ["Breathable fabric", "Racerback cut", "Moisture-wicking"]
+    },
+    {
+        "id": 17,
+        "name": "Embroidered Crew Sweatshirt",
+        "price": 45.99,
+        "image": "https://images.unsplash.com/photo-1574180045827-681f8a1a9622",
+        "category": "Hoodies",
+        "badge": "New Arrival",
+        "description": "Midweight crewneck with logo embroidery",
+        "sizes": ["S", "M", "L", "XL"],
+        "details": ["French terry", "Dropped shoulders", "Soft feel"]
+    },
+    {
+        "id": 18,
+        "name": "Ripped Black Jeans",
+        "price": 69.99,
+        "image": "https://images.unsplash.com/photo-1600185364647-2f1183466aa2",
+        "category": "Pants",
+        "description": "Edgy ripped black denim with tapered fit",
+        "sizes": ["S", "M", "L", "XL"],
+        "details": ["Black wash", "Frayed holes", "Slim silhouette"]
+    },
+    {
+        "id": 19,
+        "name": "Corduroy Button-Up Shirt",
+        "price": 48.99,
+        "image": "https://images.unsplash.com/photo-1591047139829-d91aecb6caea",
+        "category": "Shirts",
+        "description": "Classic corduroy with a modern shape",
+        "sizes": ["M", "L", "XL"],
+        "details": ["Corduroy fabric", "Button-down", "Warm and durable"]
+    },
+    {
+        "id": 20,
+        "name": "Patterned Bandana",
+        "price": 9.99,
+        "image": "https://images.unsplash.com/photo-1602810318294-b72f79898d86",
+        "category": "Accessories",
+        "description": "Versatile bandana with bold pattern",
+        "sizes": ["One Size"],
+        "details": ["Cotton fabric", "Multipurpose use", "Classic foldable design"]
     }
 ]
