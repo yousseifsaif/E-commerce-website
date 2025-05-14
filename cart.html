@@ -263,22 +263,16 @@
         }
 
         // Confirm order
-        confirmBtn.addEventListener("click", async function() {
-            if (cart.length === 0) {
-                alert("Your cart is empty!");
-                return;
-            }
+        confirmBtn.addEventListener("click", (e) => {
+            e.preventDefault();
+            if (!checkoutForm.reportValidity()) return;
 
-            if (!checkoutForm.checkValidity()) {
-                alert("Please fill in all required fields!");
-                return;
-            }
-
+            // جمع بيانات النموذج
             const formData = new FormData(checkoutForm);
-            const customerData = {};
-            formData.forEach((value, key) => {
-                customerData[key] = value;
-            });
+            const customerInfo = {};
+            for (const [key, value] of formData.entries()) {
+                customerInfo[key] = value.trim();
+            }
 
             // Prepare order data
             const orderData = {
