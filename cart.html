@@ -173,7 +173,7 @@
                 orderItemsEl.innerHTML = `
                     <div class="text-center py-8 text-gray-500">
                         <i class="fas fa-shopping-cart text-3xl mb-2"></i>
-                        <p>سلة المشتريات فارغة</p>
+                        <p>Empty Cart</p>
                     </div>
                 `;
                 subtotalEl.textContent = "$0.00";
@@ -225,7 +225,7 @@
             cart[index].quantity += change;
 
             if (cart[index].quantity <= 0) {
-                if (confirm("هل أنت متأكد من حذف هذا المنتج من السلة؟")) {
+                if (confirm("Do you want to delete it ?")) {
                     cart.splice(index, 1);
                 } else {
                     cart[index].quantity = 1;
@@ -273,7 +273,7 @@
 
             // عرض حالة التحميل
             confirmBtn.disabled = true;
-            confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> جاري المعالجة...';
+            confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Loading...';
 
             try {
                 const response = await axios.post(

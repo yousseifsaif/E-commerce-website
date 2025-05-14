@@ -7,7 +7,7 @@ async function fetchProducts() {
         return data;
     } catch (error) {
         console.error("Error loading products:", error);
-        showError("حدث خطأ في تحميل المنتجات. يرجى المحاولة مرة أخرى لاحقاً.");
+        showError("Please Try Again");
         return [];
     }
 }
@@ -15,12 +15,12 @@ async function fetchProducts() {
 // دالة لعرض المنتجات
 async function displayProducts() {
     const productsContainer = document.getElementById("products-container");
-    
+
     // عرض حالة التحميل
     productsContainer.innerHTML = `
         <div class="col-span-4 text-center py-12">
             <i class="fas fa-spinner fa-spin text-5xl text-purple-500 mb-4"></i>
-            <h2 class="text-2xl font-bold">جاري تحميل المنتجات...</h2>
+            <h2 class="text-2xl font-bold">Loading....</h2>
         </div>
     `;
 
@@ -53,7 +53,7 @@ async function displayProducts() {
                 onclick="addToCart(${product.id})" 
                 class="mt-auto bg-purple-700 hover:bg-purple-800 text-white w-full py-2 font-semibold transition"
             >
-                <i class="fas fa-cart-plus mr-2"></i>إضافة إلى السلة
+                <i class="fas fa-cart-plus mr-2"></i>Add to Cart
             </button>
         </div>
     `).join('');
@@ -84,7 +84,7 @@ async function addToCart(productId) {
         const product = products.find(p => p.id === productId);
         
         if (!product) {
-            throw new Error("المنتج غير موجود");
+            throw new Error("Not Available");
         }
 
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
@@ -100,7 +100,7 @@ async function addToCart(productId) {
         updateCartCounter();
 
         // عرض إشعار نجاح
-        showNotification("تمت إضافة المنتج إلى السلة بنجاح", "success");
+        showNotification("Added Successfully ", "success");
     } catch (error) {
         console.error("Error adding to cart:", error);
         showNotification("حدث خطأ أثناء إضافة المنتج إلى السلة", "error");
