@@ -244,17 +244,14 @@
 
         // Submit order to Google Sheets
         async function submitToGoogleSheets(orderData) {
-            const scriptURL = 'https://script.google.com/macros/s/AKfycbxhiJ0jG6qaYV0TNeCN4hMC6TxhYHBWfOE7Uq6at40xanStQPIrECMhWyT6YRSdNb9F/exec';
+            const scriptURL = 'https://script.google.com/macros/s/AKfycbxnxYwiyP7eBrRLSSXyz7hY8bWijmPfx6AXmDtBFF5HABxl1teoWGoLYhWnN5gElCq5/exec';
 
             try {
-                console.log("Submitting order:", orderData);
                 const response = await axios.post(scriptURL, orderData, {
                     headers: {
                         'Content-Type': 'application/json'
-                    },
-                    mode: 'no-cors'
+                    }
                 });
-
                 return true;
             } catch (error) {
                 console.error("Submission error:", error);
@@ -293,10 +290,14 @@
             confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
 
             try {
-                await submitToGoogleSheets(orderData);
-                localStorage.removeItem("cart");
-                cart = [];
-                successModal.classList.remove("hidden");
+                const success = await submitToGoogleSheets(orderData);
+                if (success) {
+                    localStorage.removeItem("cart");
+                    cart = [];
+                    successModal.classList.remove("hidden");
+                } else {
+                    throw new Error("Failed to submit order");
+                }
             } catch (error) {
                 console.error("Order processing error:", error);
                 alert("Your order has been received! (You may see a technical message but your order is confirmed)");
