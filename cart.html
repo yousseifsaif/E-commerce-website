@@ -45,6 +45,11 @@
         #success-modal {
             transition: opacity 0.3s ease;
         }
+        
+        .cart-item-details {
+            flex: 1;
+            min-width: 0;
+        }
     </style>
 </head>
 
@@ -147,7 +152,6 @@
         </div>
     </div>
 
-    <!-- Load axios library -->
     <script src="https://cdn.jsdelivr.net/npm/axios/dist/axios.min.js"></script>
 
     <script>
@@ -180,21 +184,22 @@
             }
 
             cart.forEach((item, index) => {
-                const itemTotal = item.price * item.quantity;
-                subtotal += itemTotal;
+                        const itemTotal = item.price * item.quantity;
+                        subtotal += itemTotal;
 
-                const itemEl = document.createElement("div");
-                itemEl.className = "flex justify-between items-center mb-4 pb-4 border-b border-gray-800";
+                        const itemEl = document.createElement("div");
+                        itemEl.className = "flex justify-between items-start mb-4 pb-4 border-b border-gray-800";
 
-                itemEl.innerHTML = `
-                    <div class="flex items-center">
-                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg mr-4">
-                        <div>
-                            <h3 class="font-medium">${item.name}</h3>
+                        itemEl.innerHTML = `
+                    <div class="flex items-start flex-1 min-w-0">
+                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg mr-4 flex-shrink-0">
+                        <div class="cart-item-details">
+                            <h3 class="font-medium truncate">${item.name}</h3>
+                            ${item.size ? `<p class="text-sm text-gray-400">Size: ${item.size}</p>` : ''}
                             <p class="text-sm text-gray-400">EGP ${item.price.toFixed(2)}</p>
                         </div>
                     </div>
-                    <div class="flex items-center">
+                    <div class="flex items-center ml-4">
                         <div class="flex items-center mr-4">
                             <button onclick="updateQuantity(${index}, -1)" class="quantity-btn mr-2">
                                 <i class="fas fa-minus text-xs"></i>
@@ -250,8 +255,6 @@
                     mode: 'no-cors'
                 });
 
-                // With no-cors mode, we can't read the response
-                // So we assume success if the request was sent
                 return true;
             } catch (error) {
                 console.error("Submission error:", error);
@@ -290,24 +293,17 @@
             confirmBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Processing...';
 
             try {
-                // Submit to Google Sheets
                 await submitToGoogleSheets(orderData);
-
-                // Clear cart and show success
                 localStorage.removeItem("cart");
                 cart = [];
                 successModal.classList.remove("hidden");
-
             } catch (error) {
                 console.error("Order processing error:", error);
                 alert("Your order has been received! (You may see a technical message but your order is confirmed)");
-
-                // Clear cart anyway as the order likely went through
                 localStorage.removeItem("cart");
                 cart = [];
                 successModal.classList.remove("hidden");
             } finally {
-                // Reset button
                 confirmBtn.disabled = false;
                 confirmBtn.innerHTML = '<i class="fas fa-credit-card mr-2"></i> Confirm Order';
             }
