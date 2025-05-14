@@ -8,7 +8,67 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Same styles as before */
+        .product-gallery {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            margin-top: 15px;
+        }
+        
+        .product-gallery img {
+            cursor: pointer;
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+            object-fit: cover;
+            height: 100px;
+            width: 100%;
+        }
+        
+        .product-gallery img:hover {
+            border-color: #9333ea;
+            transform: scale(1.05);
+        }
+        
+        .selected-size {
+            background-color: #9333ea !important;
+            color: white !important;
+            border-color: #9333ea !important;
+        }
+        
+        .quantity-btn {
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            background-color: #1f2937;
+        }
+        
+        .quantity-btn:hover {
+            background-color: #374151;
+        }
+        
+        .main-image {
+            height: 500px;
+            object-fit: contain;
+            background-color: #111827;
+            border-radius: 0.5rem;
+        }
+        
+        @media (max-width: 1024px) {
+            .main-image {
+                height: 400px;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .main-image {
+                height: 300px;
+            }
+        }
     </style>
 </head>
 
@@ -67,12 +127,16 @@
 
             const container = document.getElementById("product-details");
             container.innerHTML = `
-                <div class="product-images relative">
-                    ${product.badge ? `<span class="badge ${product.badge.toLowerCase()}">${product.badge}</span>` : ''}
-                    <img src="${product.image}" alt="${product.name}" class="w-full rounded-lg shadow-lg" id="main-image">
-                    <div class="product-gallery">
-                        ${(product.gallery || [product.image, product.image, product.image]).map(img => `
-                            <img src="${img}" alt="${product.name}" class="w-full h-24 object-cover rounded-lg" onclick="changeMainImage('${img}')">
+                <div class="product-images">
+                    <div class="relative bg-gray-900 rounded-lg p-4 flex items-center justify-center">
+                        ${product.badge ? `<span class="badge ${product.badge.toLowerCase()}">${product.badge}</span>` : ''}
+                        <img src="${product.image}" alt="${product.name}" class="main-image" id="main-image">
+                    </div>
+                    <div class="product-gallery mt-4">
+                        ${(product.gallery || [product.image, product.image, product.image]).map((img, index) => `
+                            <img src="${img}" alt="${product.name} ${index+1}" 
+                                 class="rounded-lg ${index === 0 ? 'border-2 border-purple-500' : 'border border-gray-700'}" 
+                                 onclick="changeMainImage('${img}', this)">
                         `).join('')}
                     </div>
                 </div>
@@ -95,12 +159,15 @@
                     <div class="mb-6">
                         <h3 class="text-xl font-semibold mb-3">Size:</h3>
                         <div class="flex flex-wrap gap-2">
-                            ${product.sizes.map(size => `
-                                <button onclick="selectSize(this)" class="size-btn px-4 py-2 border border-gray-700 rounded-full hover:bg-gray-800 transition">
+                            ${product.sizes.map((size, i) => `
+                                <button onclick="selectSize(this, '${size}')" 
+                                        class="size-btn px-4 py-2 border border-gray-700 rounded-full hover:bg-gray-800 transition
+                                        ${i === 0 ? 'selected-size' : ''}">
                                     ${size}
                                 </button>
                             `).join("")}
                         </div>
+                        <p id="size-error" class="text-red-500 text-sm mt-2 hidden">Please select a size</p>
                     </div>` : ''}
                     
                     <div class="mb-6">
@@ -153,16 +220,39 @@
             updateCartCounter();
         });
 
-        // الدوال المساعدة
-        function changeMainImage(newSrc) {
+        // تغيير الصورة الرئيسية عند النقر على الصور المصغرة
+        function changeMainImage(newSrc, clickedImage) {
+            // تحديث الصورة الرئيسية
             document.getElementById("main-image").src = newSrc;
+            
+            // إزالة الحد من جميع الصور المصغرة
+            document.querySelectorAll('.product-gallery img').forEach(img => {
+                img.classList.remove('border-purple-500', 'border-2');
+                img.classList.add('border', 'border-gray-700');
+            });
+            
+            // إضافة حد للصورة المختارة
+            clickedImage.classList.remove('border', 'border-gray-700');
+            clickedImage.classList.add('border-2', 'border-purple-500');
         }
 
-        function selectSize(btn) {
-            document.querySelectorAll(".size-btn").forEach(b => b.classList.remove("selected-size"));
+        // اختيار المقاس
+        let selectedSizeValue = '';
+        function selectSize(btn, size) {
+            // إزالة التحديد من جميع الأزرار
+            document.querySelectorAll(".size-btn").forEach(b => {
+                b.classList.remove("selected-size");
+            });
+            
+            // إضافة التحديد للزر المختار
             btn.classList.add("selected-size");
+            selectedSizeValue = size;
+            
+            // إخفاء رسالة الخطأ إذا كانت ظاهرة
+            document.getElementById("size-error").classList.add("hidden");
         }
 
+        // تحديث الكمية
         let quantity = 1;
         function updateQuantity(change) {
             quantity += change;
@@ -171,6 +261,7 @@
             document.getElementById("quantity").textContent = quantity;
         }
 
+        // إضافة إلى السلة
         async function addToCart(productId) {
             const products = await getProducts();
             const product = products.find(p => p.id === productId);
@@ -180,23 +271,50 @@
                 return;
             }
 
-            const selectedSize = document.querySelector(".size-btn.selected-size");
-            const cart = JSON.parse(localStorage.getItem("cart")) || [];
-            const existingItem = cart.find(item => item.id === product.id && 
-                (!selectedSize || item.size === selectedSize.textContent));
+            // التحقق من اختيار المقاس إذا كان المنتج يحتوي على مقاسات
+            if (product.sizes && product.sizes.length > 0 && !selectedSizeValue) {
+                document.getElementById("size-error").classList.remove("hidden");
+                return;
+            }
 
-            if (existingItem) {
-                existingItem.quantity += quantity;
+            const cart = JSON.parse(localStorage.getItem("cart")) || [];
+            const existingItemIndex = cart.findIndex(item => 
+                item.id === product.id && 
+                (!product.sizes || item.size === selectedSizeValue)
+            );
+
+            if (existingItemIndex >= 0) {
+                cart[existingItemIndex].quantity += quantity;
             } else {
-                cart.push({
+                const itemToAdd = {
                     ...product,
-                    quantity: quantity,
-                    size: selectedSize ? selectedSize.textContent : null
-                });
+                    quantity: quantity
+                };
+                
+                if (product.sizes && product.sizes.length > 0) {
+                    itemToAdd.size = selectedSizeValue;
+                }
+                
+                cart.push(itemToAdd);
             }
             
             localStorage.setItem("cart", JSON.stringify(cart));
-            alert(`Added ${product.name} to your cart!`);
+            
+            // عرض تأكيد الإضافة للسلة
+            const notification = document.createElement("div");
+            notification.className = "fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center";
+            notification.innerHTML = `
+                <i class="fas fa-check-circle mr-2"></i>
+                Added ${quantity} ${product.name} ${selectedSizeValue ? '(' + selectedSizeValue + ')' : ''} to cart
+            `;
+            document.body.appendChild(notification);
+            
+            // إخفاء الإشعار بعد 3 ثواني
+            setTimeout(() => {
+                notification.classList.add("opacity-0", "transition-opacity", "duration-300");
+                setTimeout(() => notification.remove(), 300);
+            }, 3000);
+            
             updateCartCounter();
         }
 
