@@ -85,13 +85,33 @@ async function addToCart(productId) {
             throw new Error("Not Available");
         }
 
+        // دعم اختيار المقاس إذا كان المنتج يحتوي على مقاسات
+        let selectedSize = '';
+        if (product.sizes && product.sizes.length) {
+            // ابحث عن الزر المختار في الصفحة (product.html)
+            const selectedBtn = document.querySelector('.size-btn.selected-size');
+            if (selectedBtn) {
+                selectedSize = selectedBtn.textContent.trim();
+            } else {
+                showNotification("يرجى اختيار المقاس", "error");
+                return;
+            }
+        }
+
         const cart = JSON.parse(localStorage.getItem("cart")) || [];
-        const existingItem = cart.find(item => item.id === product.id);
+        let existingItem;
+        if (selectedSize) {
+            existingItem = cart.find(item => item.id === product.id && item.size === selectedSize);
+        } else {
+            existingItem = cart.find(item => item.id === product.id && !item.size);
+        }
 
         if (existingItem) {
             existingItem.quantity += 1;
         } else {
-            cart.push({ ...product, quantity: 1 });
+            const itemToAdd = { ...product, quantity: 1 };
+            if (selectedSize) itemToAdd.size = selectedSize;
+            cart.push(itemToAdd);
         }
 
         localStorage.setItem("cart", JSON.stringify(cart));
