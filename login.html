@@ -88,14 +88,23 @@
     </style>
     <script>
         const firebaseConfig = {
-            apiKey: "AIzaSyD...yourKey...",
-            authDomain: "dripkingstore.firebaseapp.com",
-            projectId: "dripkingstore",
-            storageBucket: "dripkingstore.appspot.com",
-            messagingSenderId: "1234567890",
-            appId: "1:1234567890:web:abcdef123456"
+            apiKey: "AIzaSyBrNCHrvIrQa2yAuk-mVnVCNFZ4W2otDZQ",
+            authDomain: "dripking-61139.firebaseapp.com",
+            projectId: "dripking-61139",
+            storageBucket: "dripking-61139.firebasestorage.app",
+            messagingSenderId: "1058288424326",
+            appId: "1:1058288424326:web:816fb37afd7ce553094807",
+            measurementId: "G-9659HX1R7H"
         };
         firebase.initializeApp(firebaseConfig);
+
+        // التحقق من حالة تسجيل الدخول
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (user) {
+                // إذا كان المستخدم مسجل دخول بالفعل، قم بتوجيهه إلى صفحة الإدارة
+                window.location.href = "admin.html";
+            }
+        });
     </script>
 </head>
 
@@ -152,8 +161,19 @@
             loading.style.display = 'block';
 
             firebase.auth().signInWithEmailAndPassword(email, password)
-                .then(() => {
-                    window.location.href = "admin.html";
+                .then((userCredential) => {
+                    // التحقق من أن المستخدم مسجل كمسؤول
+                    return firebase.firestore().collection('admins').doc(userCredential.user.uid).get();
+                })
+                .then((doc) => {
+                    if (doc.exists) {
+                        // المستخدم مسجل كمسؤول، قم بتوجيهه إلى صفحة الإدارة
+                        window.location.href = "admin.html";
+                    } else {
+                        // المستخدم ليس مسؤولاً
+                        firebase.auth().signOut();
+                        showError('ليس لديك صلاحية للوصول إلى لوحة التحكم');
+                    }
                 })
                 .catch((error) => {
                     let errorMessage = 'حدث خطأ أثناء تسجيل الدخول';
