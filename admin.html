@@ -64,10 +64,14 @@
             </div>
 
             <div>
-                <label class="block mb-2">رفع صورة المنتج:</label>
-                <input class="w-full p-2 rounded bg-gray-700" type="file" id="imageFile" accept="image/*">
-                <input class="w-full p-2 rounded bg-gray-700 mt-2" type="url" id="image" placeholder="أو ضع رابط الصورة مباشرة">
-                <progress id="uploadProgress" value="0" max="100" style="width:100%;display:none;"></progress>
+                <label class="block mb-2">روابط صور المنتج (يمكنك إضافة أكثر من صورة):</label>
+                <div id="galleryInputs">
+                    <div class="flex gap-2 mb-2">
+                        <input class="w-full p-2 rounded bg-gray-700 gallery-link" type="url" placeholder="رابط صورة المنتج" required>
+                        <button type="button" class="remove-gallery-input bg-red-600 hover:bg-red-700 text-white px-2 rounded">-</button>
+                    </div>
+                </div>
+                <button type="button" id="addGalleryInput" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">إضافة صورة أخرى</button>
             </div>
 
             <div>
@@ -94,34 +98,25 @@
         const cancelEditButton = document.getElementById('cancelEditButton');
         const successMessage = document.getElementById('successMessage');
         const errorMessage = document.getElementById('errorMessage');
-        const imageFileInput = document.getElementById('imageFile');
-        const imageUrlInput = document.getElementById('image');
-        const uploadProgress = document.getElementById('uploadProgress');
+        const galleryInputs = document.getElementById('galleryInputs');
+        const addGalleryInputBtn = document.getElementById('addGalleryInput');
         let editProductId = null;
 
-        // رفع صورة إلى Firebase Storage
-        imageFileInput.addEventListener('change', async function() {
-            const file = imageFileInput.files[0];
-            if (!file) return;
-            const storageRef = firebase.storage().ref('products/' + Date.now() + '_' + file.name);
-            const uploadTask = storageRef.put(file);
-            uploadProgress.style.display = 'block';
-            uploadTask.on('state_changed', 
-                function(snapshot) {
-                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
-                    uploadProgress.value = progress;
-                }, 
-                function(error) {
-                    alert('خطأ في رفع الصورة: ' + error.message);
-                    uploadProgress.style.display = 'none';
-                }, 
-                function() {
-                    uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
-                        imageUrlInput.value = downloadURL;
-                        uploadProgress.style.display = 'none';
-                    });
+        // إضافة input جديد لرابط صورة
+        addGalleryInputBtn.addEventListener('click', function() {
+            const div = document.createElement('div');
+            div.className = 'flex gap-2 mb-2';
+            div.innerHTML = `<input class="w-full p-2 rounded bg-gray-700 gallery-link" type="url" placeholder="رابط صورة المنتج" required>
+                <button type="button" class="remove-gallery-input bg-red-600 hover:bg-red-700 text-white px-2 rounded">-</button>`;
+            galleryInputs.appendChild(div);
+        });
+        // حذف input صورة
+        galleryInputs.addEventListener('click', function(e) {
+            if (e.target.classList.contains('remove-gallery-input')) {
+                if (galleryInputs.children.length > 1) {
+                    e.target.parentElement.remove();
                 }
-            );
+            }
         });
 
         // إضافة أو تعديل منتج
@@ -130,8 +125,10 @@
             const name = document.getElementById('name').value;
             const price = parseFloat(document.getElementById('price').value);
             const sizes = Array.from(document.querySelectorAll('.size-checkbox:checked')).map(cb => cb.value);
-            const image = imageUrlInput.value;
             const description = document.getElementById('description').value;
+            // جمع كل روابط الصور
+            const gallery = Array.from(document.querySelectorAll('.gallery-link')).map(input => input.value).filter(Boolean);
+            const image = gallery[0] || '';
 
             if (!name || !price || !image) {
                 errorMessage.textContent = 'يرجى ملء جميع الحقول المطلوبة.';
@@ -146,17 +143,21 @@
             try {
                 if (editProductId) {
                     await db.collection("products").doc(editProductId).update({
-                        name, price, sizes, image, description
+                        name, price, sizes, image, description, gallery
                     });
                 } else {
                     await db.collection("products").add({
-                        name, price, sizes, image, description,
+                        name, price, sizes, image, description, gallery,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 }
                 form.reset();
                 Array.from(document.querySelectorAll('.size-checkbox')).forEach(cb => cb.checked = false);
-                imageUrlInput.value = '';
+                // أعد input واحد فقط للصور بعد الحفظ
+                galleryInputs.innerHTML = `<div class="flex gap-2 mb-2">
+                    <input class="w-full p-2 rounded bg-gray-700 gallery-link" type="url" placeholder="رابط صورة المنتج" required>
+                    <button type="button" class="remove-gallery-input bg-red-600 hover:bg-red-700 text-white px-2 rounded">-</button>
+                </div>`;
                 editProductId = null;
                 submitButton.textContent = 'إضافة المنتج';
                 cancelEditButton.classList.add('hidden');
@@ -176,7 +177,10 @@
         cancelEditButton.addEventListener('click', () => {
             form.reset();
             Array.from(document.querySelectorAll('.size-checkbox')).forEach(cb => cb.checked = false);
-            imageUrlInput.value = '';
+            galleryInputs.innerHTML = `<div class="flex gap-2 mb-2">
+                <input class="w-full p-2 rounded bg-gray-700 gallery-link" type="url" placeholder="رابط صورة المنتج" required>
+                <button type="button" class="remove-gallery-input bg-red-600 hover:bg-red-700 text-white px-2 rounded">-</button>
+            </div>`;
             editProductId = null;
             submitButton.textContent = 'إضافة المنتج';
             cancelEditButton.classList.add('hidden');
@@ -193,10 +197,18 @@
         function editProduct(product, id) {
             document.getElementById('name').value = product.name;
             document.getElementById('price').value = product.price;
-            imageUrlInput.value = product.image;
             document.getElementById('description').value = product.description || '';
             Array.from(document.querySelectorAll('.size-checkbox')).forEach(cb => {
                 cb.checked = product.sizes && product.sizes.includes(cb.value);
+            });
+            // عبئ روابط الصور
+            galleryInputs.innerHTML = '';
+            (product.gallery && product.gallery.length ? product.gallery : [product.image]).forEach(link => {
+                const div = document.createElement('div');
+                div.className = 'flex gap-2 mb-2';
+                div.innerHTML = `<input class="w-full p-2 rounded bg-gray-700 gallery-link" type="url" placeholder="رابط صورة المنتج" value="${link}" required>
+                    <button type="button" class="remove-gallery-input bg-red-600 hover:bg-red-700 text-white px-2 rounded">-</button>`;
+                galleryInputs.appendChild(div);
             });
             editProductId = id;
             submitButton.textContent = 'تعديل المنتج';
