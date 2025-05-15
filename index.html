@@ -594,13 +594,12 @@
         products.forEach(product => {
             html += `
             <div class="product-card bg-gray-900 rounded-lg shadow-lg p-4 flex flex-col items-center">
-                <a href="product.html?id=${product.id}">
+                <a href="product.html?id=${product.id}" class="w-full">
                     <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded mb-4">
+                    <h3 class="text-lg font-bold mb-2 text-center">${product.name}</h3>
+                    <p class="text-purple-400 font-bold mb-2">EGP ${product.price}</p>
+                    ${product.sizes && product.sizes.length ? `<p class='text-gray-400 text-sm mb-2'>المقاسات: ${product.sizes.join(', ')}</p>` : ''}
                 </a>
-                <h3 class="text-lg font-bold mb-2 text-center">${product.name}</h3>
-                <p class="text-purple-400 font-bold mb-2">EGP ${product.price}</p>
-                ${product.sizes && product.sizes.length ? `<p class='text-gray-400 text-sm mb-2'>المقاسات: ${product.sizes.join(', ')}</p>` : ''}
-                <a href="product.html?id=${product.id}" class="mt-auto bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded transition">View Details</a>
             </div>
             `;
         });
