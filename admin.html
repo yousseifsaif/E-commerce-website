@@ -80,109 +80,57 @@
         <div id="errorMessage" class="mt-4 text-center text-red-500 hidden"></div>
     </div>
 
+    <div id="productsList" class="mt-8 w-full max-w-5xl mx-auto"></div>
+
     <script>
+        // تعطيل إضافة المنتجات (لأننا نستخدم json فقط)
         const form = document.getElementById('productForm');
-        const submitButton = document.getElementById('submitButton');
-        const successMessage = document.getElementById('successMessage');
-        const errorMessage = document.getElementById('errorMessage');
-
-        // دوال التحقق
-        function validateName(name) {
-            return name.length >= 3;
-        }
-
-        function validatePrice(price) {
-            return price > 0;
-        }
-
-        function validateImageUrl(url) {
-            try {
-                new URL(url);
-                return true;
-            } catch {
-                return false;
-            }
-        }
-
-        function showError(elementId, message) {
-            const errorElement = document.getElementById(elementId);
-            errorElement.textContent = message;
-            errorElement.classList.remove('hidden');
-        }
-
-        function hideError(elementId) {
-            const errorElement = document.getElementById(elementId);
-            errorElement.classList.add('hidden');
-        }
-
-        function showSuccess() {
-            successMessage.classList.remove('hidden');
-            setTimeout(() => successMessage.classList.add('hidden'), 3000);
-        }
-
-        function showError(message) {
-            errorMessage.textContent = message;
-            errorMessage.classList.remove('hidden');
-            setTimeout(() => errorMessage.classList.add('hidden'), 3000);
-        }
-
-        form.addEventListener('submit', async(e) => {
+        form.addEventListener('submit', function(e) {
             e.preventDefault();
-            
-            // إعادة تعيين رسائل الخطأ
-            hideError('nameError');
-            hideError('priceError');
-            hideError('imageError');
-
-            const name = document.getElementById('name').value;
-            const price = parseFloat(document.getElementById('price').value);
-            const image = document.getElementById('image').value;
-            const size = document.getElementById('size').value;
-            const description = document.getElementById('description').value;
-
-            // التحقق من المدخلات
-            let isValid = true;
-
-            if (!validateName(name)) {
-                showError('nameError', 'يجب أن يكون اسم المنتج 3 أحرف على الأقل');
-                isValid = false;
-            }
-
-            if (!validatePrice(price)) {
-                showError('priceError', 'يجب أن يكون السعر أكبر من صفر');
-                isValid = false;
-            }
-
-            if (!validateImageUrl(image)) {
-                showError('imageError', 'الرجاء إدخال رابط صحيح للصورة');
-                isValid = false;
-            }
-
-            if (!isValid) return;
-
-            // تعطيل الزر وإظهار حالة التحميل
-            submitButton.disabled = true;
-            submitButton.textContent = 'جاري الإضافة...';
-
-            try {
-                await db.collection("products").add({
-                    name,
-                    price,
-                    image,
-                    size,
-                    description,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
-                form.reset();
-                showSuccess();
-            } catch (error) {
-                showError('حدث خطأ أثناء إضافة المنتج: ' + error.message);
-            } finally {
-                submitButton.disabled = false;
-                submitButton.textContent = 'إضافة المنتج';
-            }
+            alert('إضافة المنتجات متاحة فقط من خلال ملف products.json');
         });
+
+        // جلب المنتجات من ملف JSON وعرضها
+        async function loadProducts() {
+            const res = await fetch('products.json');
+            const products = await res.json();
+            const container = document.getElementById('productsList');
+            if (!products.length) {
+                container.innerHTML = '<p class="text-center text-gray-400">لا توجد منتجات</p>';
+                return;
+            }
+            let html = `
+                <h2 class="text-xl font-bold mb-4 text-center">كل المنتجات</h2>
+                <div class="overflow-x-auto">
+                <table class="min-w-full bg-gray-700 rounded">
+                    <thead>
+                        <tr>
+                            <th class="p-2">#</th>
+                            <th class="p-2">الاسم</th>
+                            <th class="p-2">السعر</th>
+                            <th class="p-2">الصورة</th>
+                            <th class="p-2">الوصف</th>
+                            <th class="p-2">المقاسات</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+            `;
+            products.forEach((product, i) => {
+                html += `
+                    <tr>
+                        <td class="p-2">${i + 1}</td>
+                        <td class="p-2">${product.name}</td>
+                        <td class="p-2">${product.price} EGP</td>
+                        <td class="p-2"><img src="${product.image}" alt="${product.name}" style="width:60px;height:60px;object-fit:cover;border-radius:6px"></td>
+                        <td class="p-2">${product.description || ''}</td>
+                        <td class="p-2">${product.sizes ? product.sizes.join(', ') : ''}</td>
+                    </tr>
+                `;
+            });
+            html += `</tbody></table></div>`;
+            container.innerHTML = html;
+        }
+        loadProducts();
     </script>
 </body>
 
