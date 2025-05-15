@@ -56,6 +56,13 @@
         
         .modal {
             transition: opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
         }
         
         .modal-content {
@@ -65,6 +72,33 @@
         
         .modal.active .modal-content {
             transform: scale(1);
+        }
+
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+
+        .faq-answer.active {
+            max-height: 500px;
+            transition: max-height 0.5s ease-in;
+        }
+
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        .terms-section {
+            transition: all 0.3s ease;
+        }
+
+        .terms-section:hover {
+            transform: translateX(10px);
         }
         /* Logo Animation Styles */
         
