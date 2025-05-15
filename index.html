@@ -180,8 +180,8 @@
                 <h4 class="text-lg font-semibold mb-4 text-white ">Quick Links</h4>
                 <ul class="space-y-2 ">
                     <li><a href="#" onclick="showShippingPolicy(event)" class="text-gray-500 hover:text-gray-300 transition ">Shipping Policy</a></li>
-                    <li><a href="# " class="text-gray-500 hover:text-gray-300 transition ">Terms & Conditions</a></li>
-                    <li><a href="# " class="text-gray-500 hover:text-gray-300 transition ">FAQ</a></li>
+                    <li><a href="#" onclick="showTerms(event)" class="text-gray-500 hover:text-gray-300 transition ">Terms & Conditions</a></li>
+                    <li><a href="#" onclick="showFAQ(event)" class="text-gray-500 hover:text-gray-300 transition ">FAQ</a></li>
                 </ul>
             </div>
             <div>
@@ -237,6 +237,219 @@
         </div>
     </div>
 
+    <!-- Terms & Conditions Modal -->
+    <div id="terms-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="modal-content bg-gray-900 border border-gray-800 rounded-lg p-8 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6 sticky top-0 bg-gray-900 py-2">
+                <h3 class="text-2xl font-bold">Terms & Conditions</h3>
+                <button onclick="closeTermsModal()" class="text-gray-500 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-6">
+                <!-- Ordering -->
+                <div class="terms-section">
+                    <h4 class="text-xl font-semibold mb-3 flex items-center">
+                        <i class="fas fa-shopping-cart text-purple-500 mr-3"></i>
+                        Ordering
+                    </h4>
+                    <div class="space-y-2 text-gray-400">
+                        <p>By placing an order with DRIP KING, you confirm that:</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>You are at least 18 years old</li>
+                            <li>All information provided is accurate and complete</li>
+                            <li>You have the legal right to use the payment method</li>
+                            <li>You accept our terms and conditions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Payment -->
+                <div class="terms-section">
+                    <h4 class="text-xl font-semibold mb-3 flex items-center">
+                        <i class="fas fa-credit-card text-purple-500 mr-3"></i>
+                        Payment
+                    </h4>
+                    <div class="space-y-2 text-gray-400">
+                        <p>We accept the following payment methods:</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Cash on Delivery (COD)</li>
+                            <li>Credit/Debit Cards</li>
+                            <li>Mobile Wallets</li>
+                        </ul>
+                        <p class="mt-2">All prices are in Egyptian Pounds (EGP) and include VAT.</p>
+                    </div>
+                </div>
+
+                <!-- Shipping -->
+                <div class="terms-section">
+                    <h4 class="text-xl font-semibold mb-3 flex items-center">
+                        <i class="fas fa-truck text-purple-500 mr-3"></i>
+                        Shipping
+                    </h4>
+                    <div class="space-y-2 text-gray-400">
+                        <p>Shipping Information:</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Free shipping on all orders</li>
+                            <li>Delivery within 2-3 business days</li>
+                            <li>Shipping available throughout Egypt</li>
+                            <li>Orders are processed within 24 hours</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Returns -->
+                <div class="terms-section">
+                    <h4 class="text-xl font-semibold mb-3 flex items-center">
+                        <i class="fas fa-undo text-purple-500 mr-3"></i>
+                        Returns & Exchanges
+                    </h4>
+                    <div class="space-y-2 text-gray-400">
+                        <p>Our return policy:</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>3-day return/exchange window</li>
+                            <li>Items must be unworn and in original condition</li>
+                            <li>Original tags must be attached</li>
+                            <li>Contact customer service for return authorization</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Privacy -->
+                <div class="terms-section">
+                    <h4 class="text-xl font-semibold mb-3 flex items-center">
+                        <i class="fas fa-shield-alt text-purple-500 mr-3"></i>
+                        Privacy & Security
+                    </h4>
+                    <div class="space-y-2 text-gray-400">
+                        <p>We take your privacy seriously:</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Your data is encrypted and secure</li>
+                            <li>We never share your information with third parties</li>
+                            <li>You can opt-out of marketing communications</li>
+                            <li>We comply with data protection regulations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Modal -->
+    <div id="faq-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="modal-content bg-gray-900 border border-gray-800 rounded-lg p-8 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6 sticky top-0 bg-gray-900 py-2">
+                <h3 class="text-2xl font-bold">Frequently Asked Questions</h3>
+                <button onclick="closeFAQModal()" class="text-gray-500 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <!-- Ordering Questions -->
+                <div class="faq-item bg-gray-800 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <span class="text-lg font-semibold">How do I place an order?</span>
+                        <i class="fas fa-chevron-down faq-icon text-purple-500"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-4">
+                        <p class="text-gray-400">To place an order:</p>
+                        <ol class="list-decimal list-inside space-y-2 text-gray-400 mt-2">
+                            <li>Browse our products and select items you want to purchase</li>
+                            <li>Add items to your cart</li>
+                            <li>Review your cart and proceed to checkout</li>
+                            <li>Fill in your shipping and payment details</li>
+                            <li>Confirm your order</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Payment Questions -->
+                <div class="faq-item bg-gray-800 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <span class="text-lg font-semibold">What payment methods do you accept?</span>
+                        <i class="fas fa-chevron-down faq-icon text-purple-500"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-4">
+                        <p class="text-gray-400">We accept various payment methods:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-400 mt-2">
+                            <li>Cash on Delivery (COD)</li>
+                            <li>Credit/Debit Cards (Visa, MasterCard)</li>
+                            <li>Mobile Wallets (Vodafone Cash, Fawry)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Shipping Questions -->
+                <div class="faq-item bg-gray-800 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <span class="text-lg font-semibold">How long does shipping take?</span>
+                        <i class="fas fa-chevron-down faq-icon text-purple-500"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-4">
+                        <p class="text-gray-400">Shipping information:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-400 mt-2">
+                            <li>Orders are processed within 24 hours</li>
+                            <li>Delivery takes 2-3 business days</li>
+                            <li>Free shipping on all orders</li>
+                            <li>Tracking number provided after shipping</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Returns Questions -->
+                <div class="faq-item bg-gray-800 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <span class="text-lg font-semibold">What is your return policy?</span>
+                        <i class="fas fa-chevron-down faq-icon text-purple-500"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-4">
+                        <p class="text-gray-400">Our return policy:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-400 mt-2">
+                            <li>3-day return/exchange window</li>
+                            <li>Items must be unworn with original tags</li>
+                            <li>Contact customer service for return authorization</li>
+                            <li>Refunds processed within 5-7 business days</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Size Questions -->
+                <div class="faq-item bg-gray-800 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <span class="text-lg font-semibold">How do I choose the right size?</span>
+                        <i class="fas fa-chevron-down faq-icon text-purple-500"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-4">
+                        <p class="text-gray-400">Size guide:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-400 mt-2">
+                            <li>Check our size chart for measurements</li>
+                            <li>Measure yourself before ordering</li>
+                            <li>Consider the fit (regular, slim, oversized)</li>
+                            <li>Read product descriptions for specific sizing notes</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Contact Questions -->
+                <div class="faq-item bg-gray-800 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <span class="text-lg font-semibold">How can I contact customer service?</span>
+                        <i class="fas fa-chevron-down faq-icon text-purple-500"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-4">
+                        <p class="text-gray-400">Contact us through:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-400 mt-2">
+                            <li>Email: support@dripking.com</li>
+                            <li>Phone: +1 (123) 456-7890</li>
+                            <li>Social Media: Instagram, TikTok, Facebook</li>
+                            <li>Live Chat: Available 24/7 on our website</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="main.js"></script>
     <script>
         function showShippingPolicy(event) {
@@ -256,11 +469,60 @@
             }, 300);
         }
 
-        // Close modal when clicking outside
-        document.getElementById('shipping-modal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeShippingModal();
-            }
+        function showTerms(event) {
+            event.preventDefault();
+            const modal = document.getElementById('terms-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+        }
+
+        function closeTermsModal() {
+            const modal = document.getElementById('terms-modal');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function showFAQ(event) {
+            event.preventDefault();
+            const modal = document.getElementById('faq-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+        }
+
+        function closeFAQModal() {
+            const modal = document.getElementById('faq-modal');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function toggleFAQ(button) {
+            const faqItem = button.parentElement;
+            const answer = button.nextElementSibling;
+            
+            // Toggle active class on the FAQ item
+            faqItem.classList.toggle('active');
+            
+            // Toggle active class on the answer
+            answer.classList.toggle('active');
+        }
+
+        // Close modals when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    if (this.id === 'shipping-modal') closeShippingModal();
+                    if (this.id === 'terms-modal') closeTermsModal();
+                    if (this.id === 'faq-modal') closeFAQModal();
+                }
+            });
         });
     </script>
 </body>
