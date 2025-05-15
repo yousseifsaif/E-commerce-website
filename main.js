@@ -1,10 +1,21 @@
-// دالة لجلب المنتجات
+// إعداد Firebase
+const firebaseConfig = {
+    apiKey: "AIzaSyBrNCHrvIrQa2yAuk-mVnVCNFZ4W2otDZQ",
+    authDomain: "dripking-61139.firebaseapp.com",
+    projectId: "dripking-61139",
+    storageBucket: "dripking-61139.firebasestorage.app",
+    messagingSenderId: "1058288424326",
+    appId: "1:1058288424326:web:816fb37afd7ce553094807",
+    measurementId: "G-9659HX1R7H"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+
+// دالة لجلب المنتجات من Firestore
 async function fetchProducts() {
     try {
-        const response = await fetch('products.json');
-        if (!response.ok) throw new Error('Network response was not ok');
-        const data = await response.json();
-        return data;
+        const snapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
     } catch (error) {
         console.error("Error loading products:", error);
         showError("Please Try");
@@ -50,7 +61,7 @@ async function displayProducts() {
                 </div>
             </a>
             <button 
-                onclick="addToCart(${product.id})" 
+                onclick="addToCart('${product.id}')" 
                 class="mt-auto bg-purple-700 hover:bg-purple-800 text-white w-full py-2 font-semibold transition"
             >
                 <i class="fas fa-cart-plus mr-2"></i>Add to Cart

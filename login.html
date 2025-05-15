@@ -106,6 +106,17 @@
                 window.location.href = "admin.html";
             }
         });
+
+        async function getProducts() {
+            const snapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
+            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+        }
+
+        async function getProductById(productId) {
+            const doc = await db.collection('products').doc(productId).get();
+            if (!doc.exists) return null;
+            return { id: doc.id, ...doc.data() };
+        }
     </script>
 </head>
 

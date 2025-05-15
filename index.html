@@ -563,106 +563,149 @@
     </div>
 
     <script src="main.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        function showShippingPolicy(event) {
-            event.preventDefault();
-            const modal = document.getElementById('shipping-modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.add('active');
-            }, 10);
+    const firebaseConfig = {
+        apiKey: "AIzaSyBrNCHrvIrQa2yAuk-mVnVCNFZ4W2otDZQ",
+        authDomain: "dripking-61139.firebaseapp.com",
+        projectId: "dripking-61139",
+        storageBucket: "dripking-61139.firebasestorage.app",
+        messagingSenderId: "1058288424326",
+        appId: "1:1058288424326:web:816fb37afd7ce553094807",
+        measurementId: "G-9659HX1R7H"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    async function getProducts() {
+        const snapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
+        return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+    }
+
+    async function displayProducts() {
+        const products = await getProducts();
+        const container = document.getElementById('products-container');
+        if (!products.length) {
+            container.innerHTML = '<p class="text-center text-gray-400">No products found.</p>';
+            return;
         }
-
-        function closeShippingModal() {
-            const modal = document.getElementById('shipping-modal');
-            modal.classList.remove('active');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
-        }
-
-        function showTerms(event) {
-            event.preventDefault();
-            const modal = document.getElementById('terms-modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.add('active');
-            }, 10);
-        }
-
-        function closeTermsModal() {
-            const modal = document.getElementById('terms-modal');
-            modal.classList.remove('active');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
-        }
-
-        function showFAQ(event) {
-            event.preventDefault();
-            const modal = document.getElementById('faq-modal');
-            modal.classList.remove('hidden');
-            setTimeout(() => {
-                modal.classList.add('active');
-            }, 10);
-        }
-
-        function closeFAQModal() {
-            const modal = document.getElementById('faq-modal');
-            modal.classList.remove('active');
-            setTimeout(() => {
-                modal.classList.add('hidden');
-            }, 300);
-        }
-
-        function toggleFAQ(button) {
-            const faqItem = button.parentElement;
-            const answer = button.nextElementSibling;
-
-            // Toggle active class on the FAQ item
-            faqItem.classList.toggle('active');
-
-            // Toggle active class on the answer
-            answer.classList.toggle('active');
-        }
-
-        // Close modals when clicking outside
-        document.querySelectorAll('.modal').forEach(modal => {
-            modal.addEventListener('click', function(e) {
-                if (e.target === this) {
-                    if (this.id === 'shipping-modal') closeShippingModal();
-                    if (this.id === 'terms-modal') closeTermsModal();
-                    if (this.id === 'faq-modal') closeFAQModal();
-                }
-            });
+        let html = '';
+        products.forEach(product => {
+            html += `
+            <div class="product-card bg-gray-900 rounded-lg shadow-lg p-4 flex flex-col items-center">
+                <a href="product.html?id=${product.id}">
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded mb-4">
+                </a>
+                <h3 class="text-lg font-bold mb-2 text-center">${product.name}</h3>
+                <p class="text-purple-400 font-bold mb-2">EGP ${product.price}</p>
+                <a href="product.html?id=${product.id}" class="mt-auto bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded transition">View Details</a>
+            </div>
+            `;
         });
+        container.innerHTML = html;
+    }
+    document.addEventListener('DOMContentLoaded', displayProducts);
 
-        // Mobile Menu Functions
-        const mobileMenuButton = document.getElementById('mobile-menu-button');
-        const closeMobileMenuButton = document.getElementById('close-mobile-menu');
-        const mobileMenu = document.getElementById('mobile-menu');
-        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+    function showShippingPolicy(event) {
+        event.preventDefault();
+        const modal = document.getElementById('shipping-modal');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.add('active');
+        }, 10);
+    }
 
-        function openMobileMenu() {
-            mobileMenu.classList.add('active');
-            mobileMenuOverlay.classList.add('active');
-            document.body.style.overflow = 'hidden';
-        }
+    function closeShippingModal() {
+        const modal = document.getElementById('shipping-modal');
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
 
-        function closeMobileMenu() {
-            mobileMenu.classList.remove('active');
-            mobileMenuOverlay.classList.remove('active');
-            document.body.style.overflow = '';
-        }
+    function showTerms(event) {
+        event.preventDefault();
+        const modal = document.getElementById('terms-modal');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.add('active');
+        }, 10);
+    }
 
-        mobileMenuButton.addEventListener('click', openMobileMenu);
-        closeMobileMenuButton.addEventListener('click', closeMobileMenu);
-        mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+    function closeTermsModal() {
+        const modal = document.getElementById('terms-modal');
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
 
-        // Close mobile menu when clicking on links
-        document.querySelectorAll('#mobile-menu a').forEach(link => {
-            link.addEventListener('click', closeMobileMenu);
+    function showFAQ(event) {
+        event.preventDefault();
+        const modal = document.getElementById('faq-modal');
+        modal.classList.remove('hidden');
+        setTimeout(() => {
+            modal.classList.add('active');
+        }, 10);
+    }
+
+    function closeFAQModal() {
+        const modal = document.getElementById('faq-modal');
+        modal.classList.remove('active');
+        setTimeout(() => {
+            modal.classList.add('hidden');
+        }, 300);
+    }
+
+    function toggleFAQ(button) {
+        const faqItem = button.parentElement;
+        const answer = button.nextElementSibling;
+
+        // Toggle active class on the FAQ item
+        faqItem.classList.toggle('active');
+
+        // Toggle active class on the answer
+        answer.classList.toggle('active');
+    }
+
+    // Close modals when clicking outside
+    document.querySelectorAll('.modal').forEach(modal => {
+        modal.addEventListener('click', function(e) {
+            if (e.target === this) {
+                if (this.id === 'shipping-modal') closeShippingModal();
+                if (this.id === 'terms-modal') closeTermsModal();
+                if (this.id === 'faq-modal') closeFAQModal();
+            }
         });
+    });
+
+    // Mobile Menu Functions
+    const mobileMenuButton = document.getElementById('mobile-menu-button');
+    const closeMobileMenuButton = document.getElementById('close-mobile-menu');
+    const mobileMenu = document.getElementById('mobile-menu');
+    const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+
+    function openMobileMenu() {
+        mobileMenu.classList.add('active');
+        mobileMenuOverlay.classList.add('active');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeMobileMenu() {
+        mobileMenu.classList.remove('active');
+        mobileMenuOverlay.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    mobileMenuButton.addEventListener('click', openMobileMenu);
+    closeMobileMenuButton.addEventListener('click', closeMobileMenu);
+    mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+    // Close mobile menu when clicking on links
+    document.querySelectorAll('#mobile-menu a').forEach(link => {
+        link.addEventListener('click', closeMobileMenu);
+    });
     </script>
 </body>
 

@@ -257,222 +257,226 @@
         </div>
     </div>
 
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
-        // دالة لجلب المنتجات
-        async function getProducts() {
-            try {
-                const response = await fetch('products.json');
-                if (!response.ok) throw new Error('Network response was not ok');
-                return await response.json();
-            } catch (error) {
-                console.error("Error loading products:", error);
-                showError("Error loading product data");
-                return [];
-            }
+    const firebaseConfig = {
+        apiKey: "AIzaSyBrNCHrvIrQa2yAuk-mVnVCNFZ4W2otDZQ",
+        authDomain: "dripking-61139.firebaseapp.com",
+        projectId: "dripking-61139",
+        storageBucket: "dripking-61139.firebasestorage.app",
+        messagingSenderId: "1058288424326",
+        appId: "1:1058288424326:web:816fb37afd7ce553094807",
+        measurementId: "G-9659HX1R7H"
+    };
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+
+    async function getProductById(productId) {
+        const doc = await db.collection('products').doc(productId).get();
+        if (!doc.exists) return null;
+        return { id: doc.id, ...doc.data() };
+    }
+
+    async function displayProductDetails() {
+        const urlParams = new URLSearchParams(window.location.search);
+        const productId = urlParams.get('id');
+
+        if (!productId) {
+            showError("No product ID provided");
+            return;
         }
 
-        // دالة لعرض المنتج
-        async function displayProductDetails() {
-            const urlParams = new URLSearchParams(window.location.search);
-            const productId = parseInt(urlParams.get('id'));
+        const product = await getProductById(productId);
 
-            if (!productId) {
-                showError("No product ID provided");
-                return;
-            }
+        if (!product) {
+            showError("Product not found");
+            return;
+        }
 
-            const products = await getProducts();
-            const product = products.find(p => p.id === productId);
-
-            if (!product) {
-                showError("Product not found");
-                return;
-            }
-
-            const container = document.getElementById("product-details");
-            container.innerHTML = `
-                <div class="space-y-4">
-                    <div class="main-image-container bg-gray-900 rounded-lg overflow-hidden">
-                        <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover" id="main-image">
+        const container = document.getElementById("product-details");
+        container.innerHTML = `
+            <div class="space-y-4">
+                <div class="main-image-container bg-gray-900 rounded-lg overflow-hidden">
+                    <img src="${product.image}" alt="${product.name}" class="w-full h-full object-cover" id="main-image">
+                </div>
+                <div class="product-gallery grid grid-cols-4 gap-2">
+                    ${(product.gallery ? product.gallery : [product.image, product.image, product.image]).map((img, index) => `
+                        <img src="${img}" alt="${product.name} ${index+1}" 
+                             class="${index === 0 ? 'border-2 border-purple-500' : 'border border-gray-700'}" 
+                             onclick="changeMainImage('${img}', this)">
+                    `).join('')}
+                </div>
+            </div>
+            
+            <div class="bg-gray-900 p-4 sm:p-6 rounded-lg border border-gray-800">
+                <h1 class="text-2xl sm:text-3xl font-bold mb-4">${product.name}</h1>
+                <p class="text-gray-400 mb-4">${product.category || ''}</p>
+                
+                <div class="flex items-center mb-6">
+                    <p class="text-2xl text-purple-400 mr-3">EGP ${product.price.toFixed(2)}</p>
+                    ${product.oldPrice ? `<p class="text-lg line-through text-gray-500">EGP ${product.oldPrice.toFixed(2)}</p>` : ''}
+                </div>
+                
+                ${product.sizes && product.sizes.length ? `
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3">Size:</h3>
+                    <div class="flex flex-wrap gap-2">
+                        ${product.sizes.map((size, i) => `
+                            <button onclick="selectSize(this, '${size}')" 
+                                    class="size-btn px-4 py-2 border border-gray-700 rounded-full hover:bg-gray-800 transition
+                                    ${i === 0 ? 'selected-size' : ''}">
+                                ${size}
+                            </button>
+                        `).join("")}
                     </div>
-                    <div class="product-gallery grid grid-cols-4 gap-2">
-                        ${(product.gallery || [product.image, product.image, product.image]).map((img, index) => `
-                            <img src="${img}" alt="${product.name} ${index+1}" 
-                                 class="${index === 0 ? 'border-2 border-purple-500' : 'border border-gray-700'}" 
-                                 onclick="changeMainImage('${img}', this)">
-                        `).join('')}
+                    <p id="size-error" class="text-red-500 text-sm mt-2 hidden">Please select a size</p>
+                </div>` : ''}
+                
+                <div class="mb-6">
+                    <h3 class="text-lg font-semibold mb-3">Quantity:</h3>
+                    <div class="flex items-center">
+                        <button onclick="updateQuantity(-1)" class="quantity-btn bg-gray-800 mr-2">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <span id="quantity" class="text-xl mx-4 w-8 text-center">1</span>
+                        <button onclick="updateQuantity(1)" class="quantity-btn bg-gray-800 ml-2">
+                            <i class="fas fa-plus"></i>
+                        </button>
                     </div>
                 </div>
                 
-                <div class="bg-gray-900 p-4 sm:p-6 rounded-lg border border-gray-800">
-                    <h1 class="text-2xl sm:text-3xl font-bold mb-4">${product.name}</h1>
-                    <p class="text-gray-400 mb-4">${product.category || ''}</p>
-                    
-                    <div class="flex items-center mb-6">
-                        <p class="text-2xl text-purple-400 mr-3">EGP ${product.price.toFixed(2)}</p>
-                        ${product.oldPrice ? `<p class="text-lg line-through text-gray-500">EGP ${product.oldPrice.toFixed(2)}</p>` : ''}
-                    </div>
-                    
-                    ${product.sizes ? `
-                    <div class="mb-6">
-                        <h3 class="text-lg font-semibold mb-3">Size:</h3>
-                        <div class="flex flex-wrap gap-2">
-                            ${product.sizes.map((size, i) => `
-                                <button onclick="selectSize(this, '${size}')" 
-                                        class="size-btn px-4 py-2 border border-gray-700 rounded-full hover:bg-gray-800 transition
-                                        ${i === 0 ? 'selected-size' : ''}">
-                                    ${size}
-                                </button>
-                            `).join("")}
-                        </div>
-                        <p id="size-error" class="text-red-500 text-sm mt-2 hidden">Please select a size</p>
-                    </div>` : ''}
-                    
-                    <div class="mb-6">
-                        <h3 class="text-lg font-semibold mb-3">Quantity:</h3>
-                        <div class="flex items-center">
-                            <button onclick="updateQuantity(-1)" class="quantity-btn bg-gray-800 mr-2">
-                                <i class="fas fa-minus"></i>
-                            </button>
-                            <span id="quantity" class="text-xl mx-4 w-8 text-center">1</span>
-                            <button onclick="updateQuantity(1)" class="quantity-btn bg-gray-800 ml-2">
-                                <i class="fas fa-plus"></i>
-                            </button>
-                        </div>
-                    </div>
-                    
-                    <button onclick="addToCart(${product.id})" class="add-to-cart-btn w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition mb-6">
-                        <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
-                    </button>
-                    
-                    <div class="border-t border-gray-800 pt-6">
-                        <h3 class="text-lg font-semibold mb-3">Product Description:</h3>
-                        <p class="text-gray-400">${product.description}</p>
-                    </div>
+                <button onclick="addToCart('${product.id}')" class="add-to-cart-btn w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-3 px-6 rounded-lg transition mb-6">
+                    <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                </button>
+                
+                <div class="border-t border-gray-800 pt-6">
+                    <h3 class="text-lg font-semibold mb-3">Product Description:</h3>
+                    <p class="text-gray-400">${product.description}</p>
                 </div>
-            `;
-        }
+            </div>
+        `;
+    }
 
-        function showError(message) {
-            const container = document.getElementById("product-details");
-            container.innerHTML = `
-                <div class="col-span-2 text-center py-12">
-                    <i class="fas fa-exclamation-circle text-5xl text-red-500 mb-4"></i>
-                    <h2 class="text-2xl font-bold">${message}</h2>
-                    <a href="index.html" class="inline-block mt-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition">
-                        Back to Store
-                    </a>
-                </div>
-            `;
-        }
+    function showError(message) {
+        const container = document.getElementById("product-details");
+        container.innerHTML = `
+            <div class="col-span-2 text-center py-12">
+                <i class="fas fa-exclamation-circle text-5xl text-red-500 mb-4"></i>
+                <h2 class="text-2xl font-bold">${message}</h2>
+                <a href="index.html" class="inline-block mt-4 bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition">
+                    Back to Store
+                </a>
+            </div>
+        `;
+    }
 
-        // دالة التهيئة
-        document.addEventListener('DOMContentLoaded', async () => {
-            await displayProductDetails();
-            updateCartCounter();
+    // دالة التهيئة
+    document.addEventListener('DOMContentLoaded', async () => {
+        await displayProductDetails();
+        updateCartCounter();
+    });
+
+    // تغيير الصورة الرئيسية عند النقر على الصور المصغرة
+    function changeMainImage(newSrc, clickedImage) {
+        document.getElementById("main-image").src = newSrc;
+        
+        document.querySelectorAll('.product-gallery img').forEach(img => {
+            img.classList.remove('border-purple-500', 'border-2');
+            img.classList.add('border', 'border-gray-700');
         });
+        
+        clickedImage.classList.remove('border', 'border-gray-700');
+        clickedImage.classList.add('border-2', 'border-purple-500');
+    }
 
-        // تغيير الصورة الرئيسية عند النقر على الصور المصغرة
-        function changeMainImage(newSrc, clickedImage) {
-            document.getElementById("main-image").src = newSrc;
-            
-            document.querySelectorAll('.product-gallery img').forEach(img => {
-                img.classList.remove('border-purple-500', 'border-2');
-                img.classList.add('border', 'border-gray-700');
-            });
-            
-            clickedImage.classList.remove('border', 'border-gray-700');
-            clickedImage.classList.add('border-2', 'border-purple-500');
+    // اختيار المقاس
+    let selectedSizeValue = '';
+    function selectSize(btn, size) {
+        document.querySelectorAll(".size-btn").forEach(b => {
+            b.classList.remove("selected-size");
+        });
+        
+        btn.classList.add("selected-size");
+        selectedSizeValue = size;
+        
+        document.getElementById("size-error").classList.add("hidden");
+    }
+
+    // تحديث الكمية
+    let quantity = 1;
+    function updateQuantity(change) {
+        quantity += change;
+        if (quantity < 1) quantity = 1;
+        if (quantity > 10) quantity = 10;
+        document.getElementById("quantity").textContent = quantity;
+    }
+
+    // إضافة إلى السلة
+    async function addToCart(productId) {
+        const product = await getProductById(productId);
+        
+        if (!product) {
+            alert("Product not found");
+            return;
         }
 
-        // اختيار المقاس
-        let selectedSizeValue = '';
-        function selectSize(btn, size) {
-            document.querySelectorAll(".size-btn").forEach(b => {
-                b.classList.remove("selected-size");
-            });
-            
-            btn.classList.add("selected-size");
-            selectedSizeValue = size;
-            
-            document.getElementById("size-error").classList.add("hidden");
+        if (product.sizes && product.sizes.length > 0 && !selectedSizeValue) {
+            document.getElementById("size-error").classList.remove("hidden");
+            return;
         }
 
-        // تحديث الكمية
-        let quantity = 1;
-        function updateQuantity(change) {
-            quantity += change;
-            if (quantity < 1) quantity = 1;
-            if (quantity > 10) quantity = 10;
-            document.getElementById("quantity").textContent = quantity;
-        }
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const existingItemIndex = cart.findIndex(item => 
+            item.id === product.id && 
+            (!product.sizes || item.size === selectedSizeValue)
+        );
 
-        // إضافة إلى السلة
-        async function addToCart(productId) {
-            const products = await getProducts();
-            const product = products.find(p => p.id === productId);
+        if (existingItemIndex >= 0) {
+            cart[existingItemIndex].quantity += quantity;
+        } else {
+            const itemToAdd = {
+                ...product,
+                quantity: quantity
+            };
             
-            if (!product) {
-                alert("Product not found");
-                return;
-            }
-
-            if (product.sizes && product.sizes.length > 0 && !selectedSizeValue) {
-                document.getElementById("size-error").classList.remove("hidden");
-                return;
-            }
-
-            const cart = JSON.parse(localStorage.getItem("cart")) || [];
-            const existingItemIndex = cart.findIndex(item => 
-                item.id === product.id && 
-                (!product.sizes || item.size === selectedSizeValue)
-            );
-
-            if (existingItemIndex >= 0) {
-                cart[existingItemIndex].quantity += quantity;
-            } else {
-                const itemToAdd = {
-                    ...product,
-                    quantity: quantity
-                };
-                
-                if (product.sizes && product.sizes.length > 0) {
-                    itemToAdd.size = selectedSizeValue;
-                }
-                
-                cart.push(itemToAdd);
+            if (product.sizes && product.sizes.length > 0) {
+                itemToAdd.size = selectedSizeValue;
             }
             
-            localStorage.setItem("cart", JSON.stringify(cart));
-            
-            const notification = document.createElement("div");
-            notification.className = "fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center";
-            notification.innerHTML = `
-                <i class="fas fa-check-circle mr-2"></i>
-                Added ${quantity} ${product.name} ${selectedSizeValue ? '(' + selectedSizeValue + ')' : ''} to cart
-            `;
-            document.body.appendChild(notification);
-            
-            setTimeout(() => {
-                notification.classList.add("opacity-0", "transition-opacity", "duration-300");
-                setTimeout(() => notification.remove(), 300);
-            }, 3000);
-            
-            updateCartCounter();
+            cart.push(itemToAdd);
         }
+        
+        localStorage.setItem("cart", JSON.stringify(cart));
+        
+        const notification = document.createElement("div");
+        notification.className = "fixed bottom-4 right-4 bg-green-500 text-white px-4 py-2 rounded-lg shadow-lg flex items-center";
+        notification.innerHTML = `
+            <i class="fas fa-check-circle mr-2"></i>
+            Added ${quantity} ${product.name} ${selectedSizeValue ? '(' + selectedSizeValue + ')' : ''} to cart
+        `;
+        document.body.appendChild(notification);
+        
+        setTimeout(() => {
+            notification.classList.add("opacity-0", "transition-opacity", "duration-300");
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+        
+        updateCartCounter();
+    }
 
-        function updateCartCounter() {
-            const cart = JSON.parse(localStorage.getItem("cart")) || [];
-            const count = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const counter = document.getElementById("cart-counter");
-            
-            if (count > 0) {
-                counter.textContent = count;
-                counter.classList.remove("hidden");
-            } else {
-                counter.classList.add("hidden");
-            }
+    function updateCartCounter() {
+        const cart = JSON.parse(localStorage.getItem("cart")) || [];
+        const count = cart.reduce((sum, item) => sum + item.quantity, 0);
+        const counter = document.getElementById("cart-counter");
+        
+        if (count > 0) {
+            counter.textContent = count;
+            counter.classList.remove("hidden");
+        } else {
+            counter.classList.add("hidden");
         }
+    }
     </script>
 </body>
 
