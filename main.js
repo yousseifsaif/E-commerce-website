@@ -1,16 +1,3 @@
-// إعداد Firebase
-const firebaseConfig = {
-    apiKey: "AIzaSyBrNCHrvIrQa2yAuk-mVnVCNFZ4W2otDZQ",
-    authDomain: "dripking-61139.firebaseapp.com",
-    projectId: "dripking-61139",
-    storageBucket: "dripking-61139.firebasestorage.app",
-    messagingSenderId: "1058288424326",
-    appId: "1:1058288424326:web:816fb37afd7ce553094807",
-    measurementId: "G-9659HX1R7H"
-};
-firebase.initializeApp(firebaseConfig);
-const db = firebase.firestore();
-
 // دالة لجلب المنتجات من Firestore
 async function fetchProducts() {
     try {
