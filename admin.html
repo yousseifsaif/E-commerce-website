@@ -10,7 +10,7 @@
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-storage.js"></script>
 
     <script>
         // تكوين Firebase
@@ -53,18 +53,21 @@
             </div>
 
             <div>
-                <input class="w-full p-2 rounded bg-gray-700" type="url" id="image" placeholder="رابط الصورة" required>
-                <span class="text-red-500 text-sm hidden" id="imageError"></span>
+                <label class="block mb-2">المقاسات المتاحة:</label>
+                <div class="flex flex-wrap gap-4">
+                    <label><input type="checkbox" class="size-checkbox" value="S"> S</label>
+                    <label><input type="checkbox" class="size-checkbox" value="M"> M</label>
+                    <label><input type="checkbox" class="size-checkbox" value="L"> L</label>
+                    <label><input type="checkbox" class="size-checkbox" value="XL"> XL</label>
+                    <label><input type="checkbox" class="size-checkbox" value="XXL"> XXL</label>
+                </div>
             </div>
 
             <div>
-                <select class="w-full p-2 rounded bg-gray-700" id="size">
-                    <option value="">اختر المقاس</option>
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                    <option value="XL">XL</option>
-                </select>
+                <label class="block mb-2">رفع صورة المنتج:</label>
+                <input class="w-full p-2 rounded bg-gray-700" type="file" id="imageFile" accept="image/*">
+                <input class="w-full p-2 rounded bg-gray-700 mt-2" type="url" id="image" placeholder="أو ضع رابط الصورة مباشرة">
+                <progress id="uploadProgress" value="0" max="100" style="width:100%;display:none;"></progress>
             </div>
 
             <div>
@@ -73,6 +76,9 @@
 
             <button type="submit" id="submitButton" class="w-full bg-blue-600 hover:bg-blue-700 p-2 rounded transition duration-200">
                 إضافة المنتج
+            </button>
+            <button type="button" id="cancelEditButton" class="w-full bg-gray-600 hover:bg-gray-700 p-2 rounded transition duration-200 mt-2 hidden">
+                إلغاء التعديل
             </button>
         </form>
 
@@ -85,37 +91,80 @@
     <script>
         const form = document.getElementById('productForm');
         const submitButton = document.getElementById('submitButton');
+        const cancelEditButton = document.getElementById('cancelEditButton');
         const successMessage = document.getElementById('successMessage');
         const errorMessage = document.getElementById('errorMessage');
+        const imageFileInput = document.getElementById('imageFile');
+        const imageUrlInput = document.getElementById('image');
+        const uploadProgress = document.getElementById('uploadProgress');
+        let editProductId = null;
 
+        // رفع صورة إلى Firebase Storage
+        imageFileInput.addEventListener('change', async function() {
+            const file = imageFileInput.files[0];
+            if (!file) return;
+            const storageRef = firebase.storage().ref('products/' + Date.now() + '_' + file.name);
+            const uploadTask = storageRef.put(file);
+            uploadProgress.style.display = 'block';
+            uploadTask.on('state_changed', 
+                function(snapshot) {
+                    const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                    uploadProgress.value = progress;
+                }, 
+                function(error) {
+                    alert('خطأ في رفع الصورة: ' + error.message);
+                    uploadProgress.style.display = 'none';
+                }, 
+                function() {
+                    uploadTask.snapshot.ref.getDownloadURL().then(function(downloadURL) {
+                        imageUrlInput.value = downloadURL;
+                        uploadProgress.style.display = 'none';
+                    });
+                }
+            );
+        });
+
+        // إضافة أو تعديل منتج
         form.addEventListener('submit', async (e) => {
             e.preventDefault();
-
             const name = document.getElementById('name').value;
             const price = parseFloat(document.getElementById('price').value);
-            const image = document.getElementById('image').value;
-            const size = document.getElementById('size').value;
+            const sizes = Array.from(document.querySelectorAll('.size-checkbox:checked')).map(cb => cb.value);
+            const image = imageUrlInput.value;
             const description = document.getElementById('description').value;
 
+            if (!name || !price || !image) {
+                errorMessage.textContent = 'يرجى ملء جميع الحقول المطلوبة.';
+                errorMessage.classList.remove('hidden');
+                setTimeout(() => errorMessage.classList.add('hidden'), 3000);
+                return;
+            }
+
             submitButton.disabled = true;
-            submitButton.textContent = 'جاري الإضافة...';
+            submitButton.textContent = editProductId ? 'جاري التعديل...' : 'جاري الإضافة...';
 
             try {
-                await db.collection("products").add({
-                    name,
-                    price,
-                    image,
-                    size,
-                    description,
-                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
-                });
-
+                if (editProductId) {
+                    await db.collection("products").doc(editProductId).update({
+                        name, price, sizes, image, description
+                    });
+                } else {
+                    await db.collection("products").add({
+                        name, price, sizes, image, description,
+                        createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                    });
+                }
                 form.reset();
+                Array.from(document.querySelectorAll('.size-checkbox')).forEach(cb => cb.checked = false);
+                imageUrlInput.value = '';
+                editProductId = null;
+                submitButton.textContent = 'إضافة المنتج';
+                cancelEditButton.classList.add('hidden');
                 successMessage.classList.remove('hidden');
                 setTimeout(() => successMessage.classList.add('hidden'), 2000);
-                loadProducts(); // إعادة تحميل المنتجات بعد الإضافة
+                loadProducts();
             } catch (error) {
-                errorMessage.textContent = 'حدث خطأ أثناء إضافة المنتج: ' + error.message;
+                errorMessage.textContent = 'حدث خطأ أثناء حفظ المنتج: ' + error.message;
                 errorMessage.classList.remove('hidden');
                 setTimeout(() => errorMessage.classList.add('hidden'), 3000);
             } finally {
@@ -124,9 +173,40 @@
             }
         });
 
+        cancelEditButton.addEventListener('click', () => {
+            form.reset();
+            Array.from(document.querySelectorAll('.size-checkbox')).forEach(cb => cb.checked = false);
+            imageUrlInput.value = '';
+            editProductId = null;
+            submitButton.textContent = 'إضافة المنتج';
+            cancelEditButton.classList.add('hidden');
+        });
+
+        // حذف منتج
+        async function deleteProduct(id) {
+            if (!confirm('هل أنت متأكد من حذف المنتج؟')) return;
+            await db.collection('products').doc(id).delete();
+            loadProducts();
+        }
+
+        // تعبئة الفورم للتعديل
+        function editProduct(product, id) {
+            document.getElementById('name').value = product.name;
+            document.getElementById('price').value = product.price;
+            imageUrlInput.value = product.image;
+            document.getElementById('description').value = product.description || '';
+            Array.from(document.querySelectorAll('.size-checkbox')).forEach(cb => {
+                cb.checked = product.sizes && product.sizes.includes(cb.value);
+            });
+            editProductId = id;
+            submitButton.textContent = 'تعديل المنتج';
+            cancelEditButton.classList.remove('hidden');
+        }
+
+        // جلب المنتجات من Firestore وعرضها
         async function loadProducts() {
             const snapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
-            const products = snapshot.docs.map(doc => doc.data());
+            const products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             const container = document.getElementById('productsList');
             if (!products.length) {
                 container.innerHTML = '<p class="text-center text-gray-400">لا توجد منتجات</p>';
@@ -144,6 +224,8 @@
                             <th class="p-2">الصورة</th>
                             <th class="p-2">الوصف</th>
                             <th class="p-2">المقاسات</th>
+                            <th class="p-2">تعديل</th>
+                            <th class="p-2">حذف</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -156,7 +238,9 @@
                         <td class="p-2">${product.price} EGP</td>
                         <td class="p-2"><img src="${product.image}" alt="${product.name}" style="width:60px;height:60px;object-fit:cover;border-radius:6px"></td>
                         <td class="p-2">${product.description || ''}</td>
-                        <td class="p-2">${product.size || ''}</td>
+                        <td class="p-2">${product.sizes ? product.sizes.join(', ') : ''}</td>
+                        <td class="p-2"><button onclick='editProduct(${JSON.stringify(product)}, "${product.id}")' class='bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded'>تعديل</button></td>
+                        <td class="p-2"><button onclick='deleteProduct("${product.id}")' class='bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded'>حذف</button></td>
                     </tr>
                 `;
             });
