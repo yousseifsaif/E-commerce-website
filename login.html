@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>تسجيل الدخول - Drip King</title>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+    <style>
+        body {
+            background: #111;
+            color: #fff;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            text-align: center;
+            padding: 2rem;
+            margin: 0;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .login-container {
+            background: #1a1a1a;
+            padding: 2rem;
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(0,0,0,0.3);
+            width: 100%;
+            max-width: 400px;
+        }
+
+        h2 {
+            margin-bottom: 2rem;
+            color: #fff;
+        }
+
+        input {
+            width: 100%;
+            padding: 12px;
+            margin: 8px 0;
+            border: 1px solid #333;
+            border-radius: 5px;
+            background: #222;
+            color: #fff;
+            font-size: 16px;
+            box-sizing: border-box;
+        }
+
+        input:focus {
+            outline: none;
+            border-color: #4CAF50;
+        }
+
+        button {
+            width: 100%;
+            padding: 12px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+            margin-top: 1rem;
+            transition: background 0.3s ease;
+        }
+
+        button:hover {
+            background: #45a049;
+        }
+
+        button:disabled {
+            background: #cccccc;
+            cursor: not-allowed;
+        }
+
+        .error-message {
+            color: #ff4444;
+            margin-top: 1rem;
+            display: none;
+        }
+
+        .loading {
+            display: none;
+            margin-top: 1rem;
+        }
+    </style>
+    <script>
+        const firebaseConfig = {
+            apiKey: "AIzaSyD...yourKey...",
+            authDomain: "dripkingstore.firebaseapp.com",
+            projectId: "dripkingstore",
+            storageBucket: "dripkingstore.appspot.com",
+            messagingSenderId: "1234567890",
+            appId: "1:1234567890:web:abcdef123456"
+        };
+        firebase.initializeApp(firebaseConfig);
+    </script>
+</head>
+
+<body>
+    <div class="login-container">
+        <h2>تسجيل الدخول</h2>
+        <input type="email" id="email" placeholder="البريد الإلكتروني" required>
+        <input type="password" id="password" placeholder="كلمة المرور" required>
+        <button onclick="login()" id="loginButton">تسجيل الدخول</button>
+        <div id="errorMessage" class="error-message"></div>
+        <div id="loading" class="loading">جاري تسجيل الدخول...</div>
+    </div>
+
+    <script>
+        function validateEmail(email) {
+            const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            return re.test(email);
+        }
+
+        function showError(message) {
+            const errorDiv = document.getElementById('errorMessage');
+            errorDiv.textContent = message;
+            errorDiv.style.display = 'block';
+        }
+
+        function login() {
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const loginButton = document.getElementById('loginButton');
+            const loading = document.getElementById('loading');
+            const errorMessage = document.getElementById('errorMessage');
+
+            // Reset error message
+            errorMessage.style.display = 'none';
+
+            // Validate inputs
+            if (!email || !password) {
+                showError('الرجاء ملء جميع الحقول');
+                return;
+            }
+
+            if (!validateEmail(email)) {
+                showError('الرجاء إدخال بريد إلكتروني صحيح');
+                return;
+            }
+
+            if (password.length < 6) {
+                showError('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                return;
+            }
+
+            // Disable button and show loading
+            loginButton.disabled = true;
+            loading.style.display = 'block';
+
+            firebase.auth().signInWithEmailAndPassword(email, password)
+                .then(() => {
+                    window.location.href = "admin.html";
+                })
+                .catch((error) => {
+                    let errorMessage = 'حدث خطأ أثناء تسجيل الدخول';
+                    switch (error.code) {
+                        case 'auth/user-not-found':
+                            errorMessage = 'البريد الإلكتروني غير مسجل';
+                            break;
+                        case 'auth/wrong-password':
+                            errorMessage = 'كلمة المرور غير صحيحة';
+                            break;
+                        case 'auth/invalid-email':
+                            errorMessage = 'البريد الإلكتروني غير صالح';
+                            break;
+                    }
+                    showError(errorMessage);
+                })
+                .finally(() => {
+                    loginButton.disabled = false;
+                    loading.style.display = 'none';
+                });
+        }
+    </script>
+</body>
+
+</html>

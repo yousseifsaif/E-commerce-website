@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>لوحة التحكم - Drip King</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Firebase -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-storage.js"></script>
+
+    <script>
+        // تكوين Firebase
+        const firebaseConfig = {
+            apiKey: "AIzaSyBrNCHrvIrQa2yAuk-mVnVCNFZ4W2otDZQ",
+            authDomain: "dripking-61139.firebaseapp.com",
+            projectId: "dripking-61139",
+            storageBucket: "dripking-61139.firebasestorage.app",
+            messagingSenderId: "1058288424326",
+            appId: "1:1058288424326:web:816fb37afd7ce553094807",
+            measurementId: "G-9659HX1R7H"
+        };
+
+        // تهيئة Firebase
+        firebase.initializeApp(firebaseConfig);
+        const db = firebase.firestore();
+
+        // التحقق من تسجيل الدخول
+        firebase.auth().onAuthStateChanged(function(user) {
+            if (!user) {
+                window.location.href = "login.html";
+            }
+        });
+    </script>
+</head>
+
+<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
+    <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
+        <h1 class="text-2xl font-bold mb-4 text-center">إضافة منتج جديد</h1>
+
+        <form id="productForm" class="space-y-4">
+            <div>
+                <input class="w-full p-2 rounded bg-gray-700" type="text" id="name" placeholder="اسم المنتج" required>
+                <span class="text-red-500 text-sm hidden" id="nameError"></span>
+            </div>
+
+            <div>
+                <input class="w-full p-2 rounded bg-gray-700" type="number" id="price" placeholder="السعر" required min="0" step="0.01">
+                <span class="text-red-500 text-sm hidden" id="priceError"></span>
+            </div>
+
+            <div>
+                <input class="w-full p-2 rounded bg-gray-700" type="url" id="image" placeholder="رابط الصورة" required>
+                <span class="text-red-500 text-sm hidden" id="imageError"></span>
+            </div>
+
+            <div>
+                <select class="w-full p-2 rounded bg-gray-700" id="size">
+                    <option value="">اختر المقاس</option>
+                    <option value="S">S</option>
+                    <option value="M">M</option>
+                    <option value="L">L</option>
+                    <option value="XL">XL</option>
+                </select>
+            </div>
+
+            <div>
+                <textarea class="w-full p-2 rounded bg-gray-700" id="description" placeholder="الوصف" rows="4"></textarea>
+            </div>
+
+            <button type="submit" id="submitButton" class="w-full bg-blue-600 hover:bg-blue-700 p-2 rounded transition duration-200">
+                إضافة المنتج
+            </button>
+        </form>
+
+        <div id="successMessage" class="mt-4 text-center text-green-400 hidden">✔ تم إضافة المنتج بنجاح!</div>
+        <div id="errorMessage" class="mt-4 text-center text-red-500 hidden"></div>
+    </div>
+
+    <script>
+        const form = document.getElementById('productForm');
+        const submitButton = document.getElementById('submitButton');
+        const successMessage = document.getElementById('successMessage');
+        const errorMessage = document.getElementById('errorMessage');
+
+        // دوال التحقق
+        function validateName(name) {
+            return name.length >= 3;
+        }
+
+        function validatePrice(price) {
+            return price > 0;
+        }
+
+        function validateImageUrl(url) {
+            try {
+                new URL(url);
+                return true;
+            } catch {
+                return false;
+            }
+        }
+
+        function showError(elementId, message) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.textContent = message;
+            errorElement.classList.remove('hidden');
+        }
+
+        function hideError(elementId) {
+            const errorElement = document.getElementById(elementId);
+            errorElement.classList.add('hidden');
+        }
+
+        function showSuccess() {
+            successMessage.classList.remove('hidden');
+            setTimeout(() => successMessage.classList.add('hidden'), 3000);
+        }
+
+        function showError(message) {
+            errorMessage.textContent = message;
+            errorMessage.classList.remove('hidden');
+            setTimeout(() => errorMessage.classList.add('hidden'), 3000);
+        }
+
+        form.addEventListener('submit', async(e) => {
+            e.preventDefault();
+            
+            // إعادة تعيين رسائل الخطأ
+            hideError('nameError');
+            hideError('priceError');
+            hideError('imageError');
+
+            const name = document.getElementById('name').value;
+            const price = parseFloat(document.getElementById('price').value);
+            const image = document.getElementById('image').value;
+            const size = document.getElementById('size').value;
+            const description = document.getElementById('description').value;
+
+            // التحقق من المدخلات
+            let isValid = true;
+
+            if (!validateName(name)) {
+                showError('nameError', 'يجب أن يكون اسم المنتج 3 أحرف على الأقل');
+                isValid = false;
+            }
+
+            if (!validatePrice(price)) {
+                showError('priceError', 'يجب أن يكون السعر أكبر من صفر');
+                isValid = false;
+            }
+
+            if (!validateImageUrl(image)) {
+                showError('imageError', 'الرجاء إدخال رابط صحيح للصورة');
+                isValid = false;
+            }
+
+            if (!isValid) return;
+
+            // تعطيل الزر وإظهار حالة التحميل
+            submitButton.disabled = true;
+            submitButton.textContent = 'جاري الإضافة...';
+
+            try {
+                await db.collection("products").add({
+                    name,
+                    price,
+                    image,
+                    size,
+                    description,
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                form.reset();
+                showSuccess();
+            } catch (error) {
+                showError('حدث خطأ أثناء إضافة المنتج: ' + error.message);
+            } finally {
+                submitButton.disabled = false;
+                submitButton.textContent = 'إضافة المنتج';
+            }
+        });
+    </script>
+</body>
+
+</html>
