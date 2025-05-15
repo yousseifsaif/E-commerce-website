@@ -163,17 +163,8 @@
             loading.style.display = 'block';
 
             firebase.auth().signInWithEmailAndPassword(email, password)
-                .then((userCredential) => {
-                    const uid = userCredential.user.uid;
-                    return db.collection('admins').doc(uid).get();
-                })
-                .then((doc) => {
-                    if (doc.exists) {
-                        window.location.href = "admin.html";
-                    } else {
-                        firebase.auth().signOut();
-                        showError('ليس لديك صلاحية للوصول إلى لوحة التحكم');
-                    }
+                .then(() => {
+                    window.location.href = "admin.html";
                 })
                 .catch((error) => {
                     showError(error.message);
