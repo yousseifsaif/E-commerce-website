@@ -325,17 +325,19 @@
             }
 
             cart.forEach((item, index) => {
-                        const itemTotal = item.price * item.quantity;
-                        subtotal += itemTotal;
+                const itemTotal = item.price * item.quantity;
+                subtotal += itemTotal;
 
-                        const itemEl = document.createElement("div");
-                        itemEl.className = "flex justify-between items-start mb-4 pb-4 border-b border-gray-800";
+                const itemEl = document.createElement("div");
+                itemEl.className = "flex justify-between items-start mb-4 pb-4 border-b border-gray-800";
 
-                        itemEl.innerHTML = `
+                itemEl.innerHTML = `
                     <div class="flex items-start flex-1 min-w-0">
-                        <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg mr-4 flex-shrink-0">
-                        <div class="cart-item-details">
-                            <h3 class="font-medium truncate">${item.name}</h3>
+                        <a href="product.html?id=${item.id}" class="w-16 h-16 flex-shrink-0">
+                            <img src="${item.image}" alt="${item.name}" class="w-full h-full object-cover rounded-lg hover:opacity-80 transition">
+                        </a>
+                        <div class="cart-item-details ml-4">
+                            <a href="product.html?id=${item.id}" class="font-medium truncate hover:text-purple-400 transition">${item.name}</a>
                             ${item.size ? `<p class="text-sm text-gray-400">Size: ${item.size}</p>` : ''}
                             <p class="text-sm text-gray-400">EGP ${item.price.toFixed(2)}</p>
                         </div>
@@ -357,8 +359,8 @@
                 orderItemsEl.appendChild(itemEl);
             });
 
-            subtotalEl.textContent = `EGP${subtotal.toFixed(2)}`;
-            totalPriceEl.textContent = `EGP${subtotal.toFixed(2)}`;
+            subtotalEl.textContent = `EGP ${subtotal.toFixed(2)}`;
+            totalPriceEl.textContent = `EGP ${subtotal.toFixed(2)}`;
         }
 
         // Update product quantity
