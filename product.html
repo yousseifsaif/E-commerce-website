@@ -152,31 +152,144 @@
                 transform: translate(-50%, -50%) scale(1.1);
             }
         }
+
+        @media (max-width: 768px) {
+            .product-gallery {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.5rem;
+            }
+
+            .product-gallery img {
+                height: 120px;
+            }
+
+            .main-image-container {
+                height: 300px;
+            }
+
+            .product-title {
+                font-size: 1.5rem;
+            }
+
+            .product-price {
+                font-size: 1.25rem;
+            }
+
+            .quantity-btn {
+                width: 32px;
+                height: 32px;
+            }
+
+            .quantity-display {
+                width: 40px;
+            }
+
+            .add-to-cart-btn {
+                padding: 0.75rem 1rem;
+                font-size: 0.875rem;
+            }
+
+            .product-description {
+                font-size: 0.875rem;
+            }
+        }
+
+        @media (max-width: 640px) {
+            .product-gallery {
+                grid-template-columns: repeat(2, 1fr);
+                gap: 0.25rem;
+            }
+
+            .product-gallery img {
+                height: 100px;
+            }
+
+            .main-image-container {
+                height: 250px;
+            }
+
+            .product-title {
+                font-size: 1.25rem;
+            }
+
+            .product-price {
+                font-size: 1.125rem;
+            }
+
+            .quantity-btn {
+                width: 28px;
+                height: 28px;
+            }
+
+            .quantity-display {
+                width: 36px;
+            }
+
+            .logo-text {
+                font-size: 1.5rem;
+            }
+
+            .crown-icon {
+                font-size: 1.25rem;
+                top: -12px;
+                right: -12px;
+            }
+        }
     </style>
 </head>
 
-<body class="bg-black text-gray-200">
+<body class="bg-black text-gray-200 min-h-screen">
     <!-- Navbar -->
-    <nav class="bg-black border-b border-gray-800 px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+    <nav class="bg-black border-b border-gray-800 px-4 sm:px-6 py-4 flex justify-between items-center sticky top-0 z-50">
         <div class="logo-container">
             <div class="logo-glow"></div>
-            <span class="logo-text">DRIP KING</span>
+            <span class="logo-text text-xl sm:text-2xl">DRIP KING</span>
             <i class="fas fa-crown crown-icon"></i>
         </div>
-        <div class="flex space-x-4">
-            <a href="index.html" class="text-gray-400 hover:text-white transition">
-                <i class="fas fa-arrow-left mr-2"></i> Back
-            </a>
-            <a href="cart.html" class="text-gray-400 hover:text-white transition relative">
-                <i class="fas fa-shopping-cart"></i>
-                <span id="cart-counter" class="cart-count hidden">0</span>
-            </a>
-        </div>
+        <a href="index.html" class="text-gray-400 hover:text-white transition text-sm sm:text-base">
+            <i class="fas fa-arrow-left mr-2"></i> Back to Shop
+        </a>
     </nav>
 
     <div class="container mx-auto px-4 py-8 max-w-6xl">
-        <div id="product-details" class="grid grid-cols-1 lg:grid-cols-2 gap-8">
-            <!-- سيتم تعبئة هذا القسم بالجافاسكريبت -->
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-8">
+            <!-- Product Gallery -->
+            <div class="space-y-4">
+                <div class="main-image-container bg-gray-900 rounded-lg overflow-hidden">
+                    <img id="main-image" src="" alt="Product" class="w-full h-full object-cover">
+                </div>
+                <div class="product-gallery grid grid-cols-4 gap-2">
+                    <!-- Gallery images will be added by JavaScript -->
+                </div>
+            </div>
+
+            <!-- Product Details -->
+            <div class="bg-gray-900 p-4 sm:p-6 rounded-lg border border-gray-800">
+                <h1 id="product-title" class="product-title text-2xl sm:text-3xl font-bold mb-4"></h1>
+                <div id="product-price" class="product-price text-purple-400 text-xl sm:text-2xl font-bold mb-6"></div>
+
+                <div class="mb-6">
+                    <label class="block text-gray-400 mb-2 text-sm sm:text-base">Quantity</label>
+                    <div class="flex items-center space-x-2">
+                        <button class="quantity-btn bg-gray-800 text-white rounded-lg flex items-center justify-center hover:bg-gray-700 transition">
+                            <i class="fas fa-minus"></i>
+                        </button>
+                        <input type="number" id="quantity" value="1" min="1" class="quantity-display bg-gray-800 text-white text-center rounded-lg focus:outline-none focus:border-purple-500">
+                        <button class="quantity-btn bg-gray-800 text-white rounded-lg flex items-center justify-center hover:bg-gray-700 transition">
+                            <i class="fas fa-plus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <button id="add-to-cart" class="add-to-cart-btn w-full bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 sm:py-3 px-4 sm:px-6 rounded-lg transition text-sm sm:text-base">
+                    <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                </button>
+
+                <div class="mt-6">
+                    <h2 class="text-lg sm:text-xl font-semibold mb-3 text-sm sm:text-base">Product Description</h2>
+                    <p id="product-description" class="product-description text-gray-400 text-sm sm:text-base"></p>
+                </div>
+            </div>
         </div>
     </div>
 
