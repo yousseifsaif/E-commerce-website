@@ -53,26 +53,26 @@
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
         }
-
+        
         .modal {
             transition: opacity 0.3s ease;
         }
-
+        
         .modal-content {
             transform: scale(0.95);
             transition: transform 0.3s ease;
         }
-
+        
         .modal.active .modal-content {
             transform: scale(1);
         }
-
         /* Logo Animation Styles */
+        
         .logo-container {
             position: relative;
             display: inline-block;
         }
-
+        
         .logo-text {
             font-size: 2rem;
             font-weight: bold;
@@ -82,7 +82,7 @@
             position: relative;
             z-index: 1;
         }
-
+        
         .crown-icon {
             position: absolute;
             top: -15px;
@@ -91,16 +91,17 @@
             color: #fbbf24;
             animation: crownFloat 2s ease-in-out infinite;
         }
-
+        
         @keyframes crownFloat {
-            0%, 100% {
+            0%,
+            100% {
                 transform: translateY(0) rotate(0deg);
             }
             50% {
                 transform: translateY(-5px) rotate(5deg);
             }
         }
-
+        
         .logo-glow {
             position: absolute;
             top: 50%;
@@ -112,9 +113,10 @@
             filter: blur(10px);
             animation: glowPulse 2s ease-in-out infinite;
         }
-
+        
         @keyframes glowPulse {
-            0%, 100% {
+            0%,
+            100% {
                 opacity: 0.5;
                 transform: translate(-50%, -50%) scale(1);
             }
@@ -172,7 +174,7 @@
         <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 ">
             <div>
                 <h3 class="text-xl font-bold mb-4 text-white ">DRIP KING</h3>
-                <p class="text-gray-500 ">Always got the Drip</p>
+                <p class="text-gray-500 ">Always Got The Drip</p>
             </div>
             <div>
                 <h4 class="text-lg font-semibold mb-4 text-white ">Quick Links</h4>
