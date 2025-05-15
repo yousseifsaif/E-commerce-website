@@ -31,12 +31,12 @@
             align-items: center;
             justify-content: center;
         }
-
+        
         .hero-button {
             transition: all 0.3s ease;
             animation: pulse 2s infinite;
         }
-
+        
         @keyframes pulse {
             0% {
                 transform: scale(1);
@@ -48,10 +48,80 @@
                 transform: scale(1);
             }
         }
-
+        
         .hero-button:hover {
             transform: translateY(-3px);
             box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+
+        .modal {
+            transition: opacity 0.3s ease;
+        }
+
+        .modal-content {
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+
+        /* Logo Animation Styles */
+        .logo-container {
+            position: relative;
+            display: inline-block;
+        }
+
+        .logo-text {
+            font-size: 2rem;
+            font-weight: bold;
+            background: linear-gradient(45deg, #9333ea, #4f46e5);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            position: relative;
+            z-index: 1;
+        }
+
+        .crown-icon {
+            position: absolute;
+            top: -15px;
+            right: -15px;
+            font-size: 1.5rem;
+            color: #fbbf24;
+            animation: crownFloat 2s ease-in-out infinite;
+        }
+
+        @keyframes crownFloat {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-5px) rotate(5deg);
+            }
+        }
+
+        .logo-glow {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle, rgba(147, 51, 234, 0.2) 0%, transparent 70%);
+            filter: blur(10px);
+            animation: glowPulse 2s ease-in-out infinite;
+        }
+
+        @keyframes glowPulse {
+            0%, 100% {
+                opacity: 0.5;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
         }
     </style>
 </head>
@@ -59,9 +129,12 @@
 <body class="bg-black text-gray-200">
     <!-- Navbar -->
     <nav class="bg-black border-b border-gray-800 px-6 py-4 flex justify-between items-center sticky top-0 z-50">
-        <div class="text-2xl font-bold text-white">DRIP KING👑</div>
+        <div class="logo-container">
+            <div class="logo-glow"></div>
+            <span class="logo-text">DRIP KING</span>
+            <i class="fas fa-crown crown-icon"></i>
+        </div>
         <div class="hidden md:flex space-x-6">
-
             <a href="#home" class="hover:text-gray-400">Home</a>
             <a href="#products" class="hover:text-gray-400">Products</a>
             <a href="#contact" class="hover:text-gray-400">Contact</a>
@@ -99,12 +172,12 @@
         <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 ">
             <div>
                 <h3 class="text-xl font-bold mb-4 text-white ">DRIP KING</h3>
-                <p class="text-gray-500 ">Your destination for premium streetwear and fashion.</p>
+                <p class="text-gray-500 ">Always got the Drip</p>
             </div>
             <div>
                 <h4 class="text-lg font-semibold mb-4 text-white ">Quick Links</h4>
                 <ul class="space-y-2 ">
-                    <li><a href="# " class="text-gray-500 hover:text-gray-300 transition ">Shipping Policy</a></li>
+                    <li><a href="#" onclick="showShippingPolicy(event)" class="text-gray-500 hover:text-gray-300 transition ">Shipping Policy</a></li>
                     <li><a href="# " class="text-gray-500 hover:text-gray-300 transition ">Terms & Conditions</a></li>
                     <li><a href="# " class="text-gray-500 hover:text-gray-300 transition ">FAQ</a></li>
                 </ul>
@@ -127,7 +200,67 @@
         </div>
     </footer>
 
-    <script src="main.js "></script>
+    <!-- Shipping Policy Modal -->
+    <div id="shipping-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="modal-content bg-gray-900 border border-gray-800 rounded-lg p-8 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">Shipping Policy</h3>
+                <button onclick="closeShippingModal()" class="text-gray-500 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div class="flex items-start">
+                    <i class="fas fa-truck text-purple-500 mt-1 mr-3"></i>
+                    <div>
+                        <h4 class="font-semibold mb-1">Shipping All Over Egypt</h4>
+                        <p class="text-gray-400">We deliver to all cities and regions in Egypt</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-clock text-purple-500 mt-1 mr-3"></i>
+                    <div>
+                        <h4 class="font-semibold mb-1">Delivery Time</h4>
+                        <p class="text-gray-400">Delivered in 2-3 Days on door</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-exchange-alt text-purple-500 mt-1 mr-3"></i>
+                    <div>
+                        <h4 class="font-semibold mb-1">Refund & Exchange</h4>
+                        <p class="text-gray-400">Refund / Exchange in 3 Days</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+    <script>
+        function showShippingPolicy(event) {
+            event.preventDefault();
+            const modal = document.getElementById('shipping-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+        }
+
+        function closeShippingModal() {
+            const modal = document.getElementById('shipping-modal');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('shipping-modal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeShippingModal();
+            }
+        });
+    </script>
 </body>
 
 </html>
