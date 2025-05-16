@@ -37,60 +37,64 @@
     </script>
 </head>
 
-<body class="bg-gray-900 text-white min-h-screen flex items-center justify-center p-4">
-    <div class="bg-gray-800 p-6 rounded-lg shadow-lg w-full max-w-md">
-        <h1 class="text-2xl font-bold mb-4 text-center">إضافة منتج جديد</h1>
+<body class="bg-gray-900 text-white min-h-screen p-4">
+    <div class="max-w-6xl mx-auto">
+        <div class="bg-gray-800 p-4 sm:p-6 rounded-lg shadow-lg w-full mb-8">
+            <h1 class="text-xl sm:text-2xl font-bold mb-4 text-center">إضافة منتج جديد</h1>
 
-        <form id="productForm" class="space-y-4">
-            <div>
-                <input class="w-full p-2 rounded bg-gray-700" type="text" id="name" placeholder="اسم المنتج" required>
-                <span class="text-red-500 text-sm hidden" id="nameError"></span>
-            </div>
-
-            <div>
-                <input class="w-full p-2 rounded bg-gray-700" type="number" id="price" placeholder="السعر" required min="0" step="0.01">
-                <span class="text-red-500 text-sm hidden" id="priceError"></span>
-            </div>
-
-            <div>
-                <label class="block mb-2">المقاسات المتاحة:</label>
-                <div class="flex flex-wrap gap-4">
-                    <label><input type="checkbox" class="size-checkbox" value="S"> S</label>
-                    <label><input type="checkbox" class="size-checkbox" value="M"> M</label>
-                    <label><input type="checkbox" class="size-checkbox" value="L"> L</label>
-                    <label><input type="checkbox" class="size-checkbox" value="XL"> XL</label>
-                    <label><input type="checkbox" class="size-checkbox" value="XXL"> XXL</label>
+            <form id="productForm" class="space-y-4">
+                <div>
+                    <input class="w-full p-2 rounded bg-gray-700 text-sm sm:text-base" type="text" id="name" placeholder="اسم المنتج" required>
+                    <span class="text-red-500 text-sm hidden" id="nameError"></span>
                 </div>
-            </div>
 
-            <div>
-                <label class="block mb-2">روابط صور المنتج (يمكنك إضافة أكثر من صورة):</label>
-                <div id="galleryInputs">
-                    <div class="flex gap-2 mb-2">
-                        <input class="w-full p-2 rounded bg-gray-700 gallery-link" type="url" placeholder="رابط صورة المنتج" required>
-                        <button type="button" class="remove-gallery-input bg-red-600 hover:bg-red-700 text-white px-2 rounded">-</button>
+                <div>
+                    <input class="w-full p-2 rounded bg-gray-700 text-sm sm:text-base" type="number" id="price" placeholder="السعر" required min="0" step="0.01">
+                    <span class="text-red-500 text-sm hidden" id="priceError"></span>
+                </div>
+
+                <div>
+                    <label class="block mb-2 text-sm sm:text-base">المقاسات المتاحة:</label>
+                    <div class="flex flex-wrap gap-2 sm:gap-4">
+                        <label class="text-sm sm:text-base"><input type="checkbox" class="size-checkbox" value="S"> S</label>
+                        <label class="text-sm sm:text-base"><input type="checkbox" class="size-checkbox" value="M"> M</label>
+                        <label class="text-sm sm:text-base"><input type="checkbox" class="size-checkbox" value="L"> L</label>
+                        <label class="text-sm sm:text-base"><input type="checkbox" class="size-checkbox" value="XL"> XL</label>
+                        <label class="text-sm sm:text-base"><input type="checkbox" class="size-checkbox" value="XXL"> XXL</label>
                     </div>
                 </div>
-                <button type="button" id="addGalleryInput" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded">إضافة صورة أخرى</button>
-            </div>
 
-            <div>
-                <textarea class="w-full p-2 rounded bg-gray-700" id="description" placeholder="الوصف" rows="4"></textarea>
-            </div>
+                <div>
+                    <label class="block mb-2 text-sm sm:text-base">روابط صور المنتج:</label>
+                    <div id="galleryInputs">
+                        <div class="flex gap-2 mb-2">
+                            <input class="w-full p-2 rounded bg-gray-700 text-sm sm:text-base gallery-link" type="url" placeholder="رابط صورة المنتج" required>
+                            <button type="button" class="remove-gallery-input bg-red-600 hover:bg-red-700 text-white px-2 rounded text-sm sm:text-base">-</button>
+                        </div>
+                    </div>
+                    <button type="button" id="addGalleryInput" class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm sm:text-base mt-2">إضافة صورة أخرى</button>
+                </div>
 
-            <button type="submit" id="submitButton" class="w-full bg-blue-600 hover:bg-blue-700 p-2 rounded transition duration-200">
-                إضافة المنتج
-            </button>
-            <button type="button" id="cancelEditButton" class="w-full bg-gray-600 hover:bg-gray-700 p-2 rounded transition duration-200 mt-2 hidden">
-                إلغاء التعديل
-            </button>
-        </form>
+                <div>
+                    <textarea class="w-full p-2 rounded bg-gray-700 text-sm sm:text-base" id="description" placeholder="الوصف" rows="4"></textarea>
+                </div>
 
-        <div id="successMessage" class="mt-4 text-center text-green-400 hidden">✔ تم إضافة المنتج بنجاح!</div>
-        <div id="errorMessage" class="mt-4 text-center text-red-500 hidden"></div>
+                <button type="submit" id="submitButton" class="w-full bg-blue-600 hover:bg-blue-700 p-2 rounded transition duration-200 text-sm sm:text-base">
+                    إضافة المنتج
+                </button>
+                <button type="button" id="cancelEditButton" class="w-full bg-gray-600 hover:bg-gray-700 p-2 rounded transition duration-200 mt-2 hidden text-sm sm:text-base">
+                    إلغاء التعديل
+                </button>
+            </form>
+
+            <div id="successMessage" class="mt-4 text-center text-green-400 hidden text-sm sm:text-base">✔ تم إضافة المنتج بنجاح!</div>
+            <div id="errorMessage" class="mt-4 text-center text-red-500 hidden text-sm sm:text-base"></div>
+        </div>
+
+        <div id="productsList" class="w-full">
+            <!-- Products will be loaded here -->
+        </div>
     </div>
-
-    <div id="productsList" class="mt-8 w-full max-w-5xl mx-auto"></div>
 
     <script>
         const form = document.getElementById('productForm');
@@ -106,8 +110,8 @@
         addGalleryInputBtn.addEventListener('click', function() {
             const div = document.createElement('div');
             div.className = 'flex gap-2 mb-2';
-            div.innerHTML = `<input class="w-full p-2 rounded bg-gray-700 gallery-link" type="url" placeholder="رابط صورة المنتج" required>
-                <button type="button" class="remove-gallery-input bg-red-600 hover:bg-red-700 text-white px-2 rounded">-</button>`;
+            div.innerHTML = `<input class="w-full p-2 rounded bg-gray-700 text-sm sm:text-base gallery-link" type="url" placeholder="رابط صورة المنتج" required>
+                <button type="button" class="remove-gallery-input bg-red-600 hover:bg-red-700 text-white px-2 rounded text-sm sm:text-base">-</button>`;
             galleryInputs.appendChild(div);
         });
         // حذف input صورة
@@ -155,8 +159,8 @@
                 Array.from(document.querySelectorAll('.size-checkbox')).forEach(cb => cb.checked = false);
                 // أعد input واحد فقط للصور بعد الحفظ
                 galleryInputs.innerHTML = `<div class="flex gap-2 mb-2">
-                    <input class="w-full p-2 rounded bg-gray-700 gallery-link" type="url" placeholder="رابط صورة المنتج" required>
-                    <button type="button" class="remove-gallery-input bg-red-600 hover:bg-red-700 text-white px-2 rounded">-</button>
+                    <input class="w-full p-2 rounded bg-gray-700 text-sm sm:text-base gallery-link" type="url" placeholder="رابط صورة المنتج" required>
+                    <button type="button" class="remove-gallery-input bg-red-600 hover:bg-red-700 text-white px-2 rounded text-sm sm:text-base">-</button>
                 </div>`;
                 editProductId = null;
                 submitButton.textContent = 'إضافة المنتج';
@@ -178,8 +182,8 @@
             form.reset();
             Array.from(document.querySelectorAll('.size-checkbox')).forEach(cb => cb.checked = false);
             galleryInputs.innerHTML = `<div class="flex gap-2 mb-2">
-                <input class="w-full p-2 rounded bg-gray-700 gallery-link" type="url" placeholder="رابط صورة المنتج" required>
-                <button type="button" class="remove-gallery-input bg-red-600 hover:bg-red-700 text-white px-2 rounded">-</button>
+                <input class="w-full p-2 rounded bg-gray-700 text-sm sm:text-base gallery-link" type="url" placeholder="رابط صورة المنتج" required>
+                <button type="button" class="remove-gallery-input bg-red-600 hover:bg-red-700 text-white px-2 rounded text-sm sm:text-base">-</button>
             </div>`;
             editProductId = null;
             submitButton.textContent = 'إضافة المنتج';
@@ -206,8 +210,8 @@
             (product.gallery && product.gallery.length ? product.gallery : [product.image]).forEach(link => {
                 const div = document.createElement('div');
                 div.className = 'flex gap-2 mb-2';
-                div.innerHTML = `<input class="w-full p-2 rounded bg-gray-700 gallery-link" type="url" placeholder="رابط صورة المنتج" value="${link}" required>
-                    <button type="button" class="remove-gallery-input bg-red-600 hover:bg-red-700 text-white px-2 rounded">-</button>`;
+                div.innerHTML = `<input class="w-full p-2 rounded bg-gray-700 text-sm sm:text-base gallery-link" type="url" placeholder="رابط صورة المنتج" value="${link}" required>
+                    <button type="button" class="remove-gallery-input bg-red-600 hover:bg-red-700 text-white px-2 rounded text-sm sm:text-base">-</button>`;
                 galleryInputs.appendChild(div);
             });
             editProductId = id;
@@ -220,45 +224,64 @@
             const snapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
             const products = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
             const container = document.getElementById('productsList');
+            
             if (!products.length) {
-                container.innerHTML = '<p class="text-center text-gray-400">لا توجد منتجات</p>';
+                container.innerHTML = '<p class="text-center text-gray-400 text-sm sm:text-base">لا توجد منتجات</p>';
                 return;
             }
+
             let html = `
-                <h2 class="text-xl font-bold mb-4 text-center">كل المنتجات</h2>
-                <div class="overflow-x-auto">
-                <table class="min-w-full bg-gray-700 rounded">
-                    <thead>
-                        <tr>
-                            <th class="p-2">#</th>
-                            <th class="p-2">الاسم</th>
-                            <th class="p-2">السعر</th>
-                            <th class="p-2">الصورة</th>
-                            <th class="p-2">الوصف</th>
-                            <th class="p-2">المقاسات</th>
-                            <th class="p-2">تعديل</th>
-                            <th class="p-2">حذف</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <h2 class="text-lg sm:text-xl font-bold mb-4 text-center">كل المنتجات</h2>
+                <div class="overflow-x-auto rounded-lg">
+                    <div class="min-w-full inline-block align-middle">
+                        <div class="overflow-hidden">
+                            <table class="min-w-full divide-y divide-gray-700">
+                                <thead class="bg-gray-700">
+                                    <tr>
+                                        <th class="px-3 py-2 text-right text-xs sm:text-sm font-medium text-gray-300">#</th>
+                                        <th class="px-3 py-2 text-right text-xs sm:text-sm font-medium text-gray-300">الاسم</th>
+                                        <th class="px-3 py-2 text-right text-xs sm:text-sm font-medium text-gray-300">السعر</th>
+                                        <th class="px-3 py-2 text-right text-xs sm:text-sm font-medium text-gray-300">الصورة</th>
+                                        <th class="px-3 py-2 text-right text-xs sm:text-sm font-medium text-gray-300">الوصف</th>
+                                        <th class="px-3 py-2 text-right text-xs sm:text-sm font-medium text-gray-300">المقاسات</th>
+                                        <th class="px-3 py-2 text-right text-xs sm:text-sm font-medium text-gray-300">تعديل</th>
+                                        <th class="px-3 py-2 text-right text-xs sm:text-sm font-medium text-gray-300">حذف</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-700">
             `;
+
             products.forEach((product, i) => {
                 html += `
-                    <tr>
-                        <td class="p-2">${i + 1}</td>
-                        <td class="p-2">${product.name}</td>
-                        <td class="p-2">${product.price} EGP</td>
-                        <td class="p-2"><img src="${product.image}" alt="${product.name}" style="width:60px;height:60px;object-fit:cover;border-radius:6px"></td>
-                        <td class="p-2">${product.description || ''}</td>
-                        <td class="p-2">${product.sizes ? product.sizes.join(', ') : ''}</td>
-                        <td class="p-2"><button onclick='editProduct(${JSON.stringify(product)}, "${product.id}")' class='bg-yellow-500 hover:bg-yellow-600 text-white px-3 py-1 rounded'>تعديل</button></td>
-                        <td class="p-2"><button onclick='deleteProduct("${product.id}")' class='bg-red-600 hover:bg-red-700 text-white px-3 py-1 rounded'>حذف</button></td>
+                    <tr class="hover:bg-gray-700">
+                        <td class="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${i + 1}</td>
+                        <td class="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${product.name}</td>
+                        <td class="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${product.price} EGP</td>
+                        <td class="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                            <img src="${product.image}" alt="${product.name}" class="w-12 h-12 sm:w-16 sm:h-16 object-cover rounded">
+                        </td>
+                        <td class="px-3 py-2 text-xs sm:text-sm max-w-[150px] truncate">${product.description || ''}</td>
+                        <td class="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">${product.sizes ? product.sizes.join(', ') : ''}</td>
+                        <td class="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                            <button onclick='editProduct(${JSON.stringify(product)}, "${product.id}")' 
+                                class='bg-yellow-500 hover:bg-yellow-600 text-white px-2 py-1 rounded text-xs sm:text-sm'>
+                                تعديل
+                            </button>
+                        </td>
+                        <td class="px-3 py-2 text-xs sm:text-sm whitespace-nowrap">
+                            <button onclick='deleteProduct("${product.id}")' 
+                                class='bg-red-600 hover:bg-red-700 text-white px-2 py-1 rounded text-xs sm:text-sm'>
+                                حذف
+                            </button>
+                        </td>
                     </tr>
                 `;
             });
-            html += `</tbody></table></div>`;
+
+            html += `</tbody></table></div></div></div>`;
             container.innerHTML = html;
         }
+
         loadProducts();
     </script>
 </body>
