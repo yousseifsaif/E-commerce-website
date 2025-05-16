@@ -4,60 +4,23 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Drip King - Premium Products</title>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
+    <title>DRIP KING - Premium Fashion</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        body {
-            background: #000;
-            color: #fff;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            margin: 0;
-            padding: 0;
-            min-height: 100vh;
-        }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 2rem;
-            animation: fadeIn 0.5s ease-out;
-        }
-
-        @keyframes fadeIn {
-            from { opacity: 0; transform: translateY(20px); }
-            to { opacity: 1; transform: translateY(0); }
-        }
-
-        header {
-            text-align: center;
-            margin-bottom: 3rem;
-        }
-
-        h1 {
-            font-size: 2.5rem;
-            margin-bottom: 1rem;
-            color: #fff;
-        }
-
-        .products-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-            gap: 2rem;
-            padding: 1rem;
-        }
-
         .product-card {
             background: #111;
             border-radius: 10px;
             overflow: hidden;
             transition: all 0.3s ease;
             position: relative;
+            border: 1px solid #333;
         }
-
+        
         .product-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            border-color: #9333ea;
         }
 
         .product-image {
@@ -73,24 +36,33 @@
 
         .product-info {
             padding: 1.5rem;
+            background: linear-gradient(to bottom, #111, #000);
         }
 
         .product-name {
             font-size: 1.2rem;
             margin-bottom: 0.5rem;
             color: #fff;
+            transition: color 0.3s ease;
+        }
+
+        .product-card:hover .product-name {
+            color: #9333ea;
         }
 
         .product-price {
             font-size: 1.1rem;
             color: #fff;
             margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
         }
 
         .old-price {
             text-decoration: line-through;
             color: #666;
-            margin-right: 0.5rem;
+            font-size: 0.9rem;
         }
 
         .product-badge {
@@ -103,6 +75,16 @@
             font-weight: bold;
             color: #fff;
             z-index: 1;
+            transform: translateY(-10px);
+            opacity: 0;
+            animation: badgeAppear 0.3s ease forwards;
+        }
+
+        @keyframes badgeAppear {
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
         }
 
         .badge-popular { background: #3b82f6; }
@@ -114,17 +96,20 @@
         .view-button {
             display: inline-block;
             padding: 0.8rem 1.5rem;
-            background: #fff;
-            color: #000;
+            background: #9333ea;
+            color: #fff;
             text-decoration: none;
             border-radius: 5px;
             transition: all 0.3s ease;
             font-weight: 500;
+            width: 100%;
+            text-align: center;
         }
 
         .view-button:hover {
             transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+            background: #7e22ce;
+            box-shadow: 0 5px 15px rgba(147, 51, 234, 0.3);
         }
 
         .loading {
@@ -136,6 +121,7 @@
 
         .loading i {
             animation: spin 1s linear infinite;
+            color: #9333ea;
         }
 
         @keyframes spin {
@@ -156,77 +142,130 @@
             h1 {
                 font-size: 2rem;
             }
+
+            .product-card {
+                border-width: 1px;
+            }
+
+            .product-info {
+                padding: 1rem;
+            }
+
+            .product-name {
+                font-size: 1.1rem;
+            }
+
+            .product-price {
+                font-size: 1rem;
+            }
+
+            .view-button {
+                padding: 0.7rem 1.2rem;
+                font-size: 0.9rem;
+            }
         }
-    </style>
-</head>
-
-<body>
-    <!-- Navbar -->
-    <nav class="bg-black border-b border-gray-800 px-4 sm:px-6 py-4 flex justify-between items-center sticky top-0 z-50">
-        <div class="logo-container">
-            <div class="logo-glow"></div>
-            <span class="logo-text text-xl sm:text-2xl">DRIP KING</span>
-            <i class="fas fa-crown crown-icon"></i>
-        </div>
-        <div class="flex items-center gap-4">
-            <a href="index.html" class="text-gray-400 hover:text-white transition text-sm sm:text-base">
-                <i class="fas fa-home mr-2"></i> Home
-            </a>
-            <a href="cart.html" class="text-gray-400 hover:text-white transition text-sm sm:text-base">
-                <i class="fas fa-shopping-cart mr-2"></i> Cart
-            </a>
-        </div>
-    </nav>
-
-    <div class="container">
-        <header>
-            <h1>Premium Products</h1>
-        </header>
-        <div id="products" class="products-grid">
-            <div class="loading">
-                <i class="fas fa-spinner"></i> Loading products...
-            </div>
-        </div>
-    </div>
-
-    <!-- Footer -->
-    <footer class="bg-black border-t border-gray-800 mt-12 py-6">
-        <div class="container mx-auto">
-            <div class="flex flex-col sm:flex-row justify-between items-center">
-                <div class="mb-4 sm:mb-0">
-                    <div class="logo-container">
-                        <div class="logo-glow"></div>
-                        <span class="logo-text text-xl sm:text-2xl">DRIP KING</span>
-                        <i class="fas fa-crown crown-icon"></i>
-                    </div>
-                    <p class="text-gray-500 text-sm mt-2">&copy; 2024 DRIP KING. All rights reserved.</p>
-                </div>
-                <div class="flex flex-col sm:flex-row gap-4 sm:gap-8">
-                    <div>
-                        <h3 class="text-white font-semibold mb-2">Quick Links</h3>
-                        <ul class="space-y-2">
-                            <li><a href="index.html" class="text-gray-400 hover:text-white transition">Home</a></li>
-                            <li><a href="cart.html" class="text-gray-400 hover:text-white transition">Cart</a></li>
-                        </ul>
-                    </div>
-                    <div>
-                        <h3 class="text-white font-semibold mb-2">Contact</h3>
-                        <ul class="space-y-2">
-                            <li><a href="mailto:support@dripking.com" class="text-gray-400 hover:text-white transition">support@dripking.com</a></li>
-                            <li class="text-gray-400">+20 123 456 7890</li>
-                        </ul>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" />
-    <style>
+        
+        .cart-count {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background-color: #9333ea;
+            color: white;
+            border-radius: 50%;
+            width: 18px;
+            height: 18px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 10;
+        }
+        
+        .hero-button {
+            transition: all 0.3s ease;
+            animation: pulse 2s infinite;
+        }
+        
+        @keyframes pulse {
+            0% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+        
+        .hero-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
+        }
+        
+        .modal {
+            transition: opacity 0.3s ease;
+            opacity: 0;
+            pointer-events: none;
+        }
+        
+        .modal.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        .modal-content {
+            transform: scale(0.95);
+            transition: transform 0.3s ease;
+        }
+        
+        .modal.active .modal-content {
+            transform: scale(1);
+        }
+        
+        .faq-answer {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.3s ease-out;
+        }
+        
+        .faq-answer.active {
+            max-height: 500px;
+            transition: max-height 0.5s ease-in;
+        }
+        
+        .faq-icon {
+            transition: transform 0.3s ease;
+        }
+        
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+        
+        .terms-section {
+            transition: all 0.3s ease;
+        }
+        
+        .terms-section:hover {
+            transform: translateX(10px);
+        }
+        /* Logo Animation Styles */
+        
         .logo-container {
             position: relative;
             display: inline-block;
         }
+        
         .logo-text {
             font-size: 2rem;
             font-weight: bold;
@@ -236,6 +275,7 @@
             position: relative;
             z-index: 1;
         }
+        
         .crown-icon {
             position: absolute;
             top: -15px;
@@ -244,10 +284,17 @@
             color: #fbbf24;
             animation: crownFloat 2s ease-in-out infinite;
         }
+        
         @keyframes crownFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-5px) rotate(5deg); }
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-5px) rotate(5deg);
+            }
         }
+        
         .logo-glow {
             position: absolute;
             top: 50%;
@@ -259,12 +306,424 @@
             filter: blur(10px);
             animation: glowPulse 2s ease-in-out infinite;
         }
+        
         @keyframes glowPulse {
-            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+            0%,
+            100% {
+                opacity: 0.5;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
+        }
+        /* Mobile Menu Styles */
+        
+        .mobile-menu {
+            position: fixed;
+            top: 0;
+            right: -100%;
+            width: 80%;
+            max-width: 300px;
+            height: 100vh;
+            background: #111827;
+            transition: right 0.3s ease;
+            z-index: 100;
+            padding: 2rem;
+            border-left: 1px solid #374151;
+        }
+        
+        .mobile-menu.active {
+            right: 0;
+        }
+        
+        .mobile-menu-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity 0.3s ease;
+            z-index: 99;
+        }
+        
+        .mobile-menu-overlay.active {
+            opacity: 1;
+            pointer-events: auto;
+        }
+        
+        @media (max-width: 768px) {
+            .hero-button {
+                padding: 0.75rem 1.5rem;
+                font-size: 0.875rem;
+            }
+            .product-card {
+                margin-bottom: 1rem;
+            }
+            .modal-content {
+                width: 95%;
+                margin: 1rem;
+                padding: 1rem;
+            }
+            .terms-section,
+            .faq-item {
+                padding: 1rem;
+            }
         }
     </style>
+</head>
 
+<body class="bg-black text-gray-200">
+    <!-- Navbar -->
+    <nav class="bg-black border-b border-gray-800 px-4 sm:px-6 py-4 flex justify-between items-center sticky top-0 z-50">
+        <div class="logo-container">
+            <div class="logo-glow"></div>
+            <span class="logo-text text-xl sm:text-2xl">DRIP KING</span>
+            <i class="fas fa-crown crown-icon"></i>
+        </div>
+        <div class="hidden md:flex space-x-6">
+            <a href="#home" class="hover:text-gray-400">Home</a>
+            <a href="#products" class="hover:text-gray-400">Products</a>
+            <a href="#contact" class="hover:text-gray-400">Contact</a>
+        </div>
+        <div class="flex items-center space-x-4">
+            <button id="mobile-menu-button" class="md:hidden text-gray-400 hover:text-white">
+                <i class="fas fa-bars text-xl"></i>
+            </button>
+            <a href="login.html" class="text-gray-400 hover:text-white transition">
+                <i class="fas fa-user text-xl"></i>
+            </a>
+            <a href="cart.html" class="text-gray-400 hover:text-white transition relative">
+                <i class="fas fa-shopping-cart"></i>
+                <span id="cart-counter" class="cart-count hidden">0</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobile-menu" class="mobile-menu">
+        <div class="flex justify-between items-center mb-8">
+            <div class="logo-container">
+                <div class="logo-glow"></div>
+                <span class="logo-text text-xl">DRIP KING</span>
+                <i class="fas fa-crown crown-icon"></i>
+            </div>
+            <button id="close-mobile-menu" class="text-gray-400 hover:text-white">
+                <i class="fas fa-times text-xl"></i>
+            </button>
+        </div>
+        <div class="flex flex-col space-y-4">
+            <a href="#home" class="text-gray-400 hover:text-white py-2" onclick="closeMobileMenu()">Home</a>
+            <a href="#products" class="text-gray-400 hover:text-white py-2" onclick="closeMobileMenu()">Products</a>
+            <a href="#contact" class="text-gray-400 hover:text-white py-2" onclick="closeMobileMenu()">Contact</a>
+            <a href="login.html" class="text-gray-400 hover:text-white py-2" onclick="closeMobileMenu()">
+                <i class="fas fa-user mr-2"></i> Login
+            </a>
+        </div>
+    </div>
+    <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
+
+    <!-- Hero Section -->
+    <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/50 z-10"></div>
+        <img src="https://i.ibb.co/1GfRFfwW/Logo.png" class="absolute w-full h-full object-cover" style="object-position: center center;" alt="Banner">
+
+        <a href="#products" class="hero-button z-20 bg-purple-600 text-white px-8 py-4 rounded-full hover:bg-purple-700 transition font-medium border border-purple-500
+                  text-sm sm:text-base md:text-lg">
+            Shop Now <i class="fas fa-arrow-right ml-2"></i>
+        </a>
+    </section>
+
+    <!-- Products Section -->
+    <section id="products" class="py-16 px-4">
+        <div class="container mx-auto">
+            <h2 class="text-3xl font-bold text-center mb-10">Bestselling Products</h2>
+            <div id="products-container" class="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+                <!-- Products loaded via JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <footer id="contact" class=" bg-black py-12 px-4 border-t border-gray-900 ">
+        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 ">
+            <div>
+                <h3 class="text-xl font-bold mb-4 text-white ">DRIP KING</h3>
+                <p class="text-gray-500 ">Always Got The Drip</p>
+            </div>
+            <div>
+                <h4 class="text-lg font-semibold mb-4 text-white ">Quick Links</h4>
+                <ul class="space-y-2 ">
+                    <li><a href="#" onclick="showShippingPolicy(event)" class="text-gray-500 hover:text-gray-300 transition ">Shipping Policy</a></li>
+                    <li><a href="#" onclick="showTerms(event)" class="text-gray-500 hover:text-gray-300 transition ">Terms & Conditions</a></li>
+                    <li><a href="#" onclick="showFAQ(event)" class="text-gray-500 hover:text-gray-300 transition ">FAQ</a></li>
+                </ul>
+            </div>
+            <div>
+                <h4 class="text-lg font-semibold mb-4 text-white ">Contact Us</h4>
+                <ul class="space-y-2 text-gray-500 ">
+                    <li class="flex items-center "><i class="fas fa-phone mr-2 "></i> (123) 456-7890</li>
+                    <li class="flex items-center "><i class="fas fa-envelope mr-2 "></i> info@dripking.com</li>
+                </ul>
+            </div>
+            <div class="flex justify-center space-x-4 mb-4 ">
+                <a href="https://www.instagram.com/dripking.eggy/ " target="_blank " class="hover:text-pink-500 "><i class="fab fa-instagram "></i></a>
+                <a href="https://www.tiktok.com/@drip.kingg11 " target="_blank " class="hover:text-white "><i class="fab fa-tiktok "></i></a>
+                <a href="https://www.facebook.com/yourpage " target="_blank " class="hover:text-blue-500 "><i class="fab fa-facebook-f "></i></a>
+            </div>
+        </div>
+        <div class="border-t border-gray-900 mt-8 pt-8 text-center text-white ">
+            <p>© 2025 DRIP KING. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <!-- Shipping Policy Modal -->
+    <div id="shipping-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="modal-content bg-gray-900 border border-gray-800 rounded-lg p-8 max-w-md w-full mx-4">
+            <div class="flex justify-between items-center mb-6">
+                <h3 class="text-2xl font-bold">Shipping Policy</h3>
+                <button onclick="closeShippingModal()" class="text-gray-500 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <div class="flex items-start">
+                    <i class="fas fa-truck text-purple-500 mt-1 mr-3"></i>
+                    <div>
+                        <h4 class="font-semibold mb-1">Shipping All Over Egypt</h4>
+                        <p class="text-gray-400">We deliver to all cities and regions in Egypt</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-clock text-purple-500 mt-1 mr-3"></i>
+                    <div>
+                        <h4 class="font-semibold mb-1">Delivery Time</h4>
+                        <p class="text-gray-400">Delivered in 2-3 Days on door</p>
+                    </div>
+                </div>
+                <div class="flex items-start">
+                    <i class="fas fa-exchange-alt text-purple-500 mt-1 mr-3"></i>
+                    <div>
+                        <h4 class="font-semibold mb-1">Refund & Exchange</h4>
+                        <p class="text-gray-400">Refund / Exchange in 3 Days</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Terms & Conditions Modal -->
+    <div id="terms-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="modal-content bg-gray-900 border border-gray-800 rounded-lg p-8 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6 sticky top-0 bg-gray-900 py-2">
+                <h3 class="text-2xl font-bold">Terms & Conditions</h3>
+                <button onclick="closeTermsModal()" class="text-gray-500 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-6">
+                <!-- Ordering -->
+                <div class="terms-section">
+                    <h4 class="text-xl font-semibold mb-3 flex items-center">
+                        <i class="fas fa-shopping-cart text-purple-500 mr-3"></i> Ordering
+                    </h4>
+                    <div class="space-y-2 text-gray-400">
+                        <p>By placing an order with DRIP KING, you confirm that:</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>You are at least 18 years old</li>
+                            <li>All information provided is accurate and complete</li>
+                            <li>You have the legal right to use the payment method</li>
+                            <li>You accept our terms and conditions</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Payment -->
+                <div class="terms-section">
+                    <h4 class="text-xl font-semibold mb-3 flex items-center">
+                        <i class="fas fa-credit-card text-purple-500 mr-3"></i> Payment
+                    </h4>
+                    <div class="space-y-2 text-gray-400">
+                        <p>We accept the following payment methods:</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Cash on Delivery (COD)</li>
+                            <li>Credit/Debit Cards</li>
+                            <li>Mobile Wallets</li>
+                        </ul>
+                        <p class="mt-2">All prices are in Egyptian Pounds (EGP) and include VAT.</p>
+                    </div>
+                </div>
+
+                <!-- Shipping -->
+                <div class="terms-section">
+                    <h4 class="text-xl font-semibold mb-3 flex items-center">
+                        <i class="fas fa-truck text-purple-500 mr-3"></i> Shipping
+                    </h4>
+                    <div class="space-y-2 text-gray-400">
+                        <p>Shipping Information:</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Delivery within 2-3 business days</li>
+                            <li>Shipping available throughout Egypt</li>
+                            <li>Orders are processed within 24 hours</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Returns -->
+                <div class="terms-section">
+                    <h4 class="text-xl font-semibold mb-3 flex items-center">
+                        <i class="fas fa-undo text-purple-500 mr-3"></i> Returns & Exchanges
+                    </h4>
+                    <div class="space-y-2 text-gray-400">
+                        <p>Our return policy:</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>3-day return/exchange window</li>
+                            <li>Items must be unworn and in original condition</li>
+                            <li>Original tags must be attached</li>
+                            <li>Contact customer service for return authorization</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Privacy -->
+                <div class="terms-section">
+                    <h4 class="text-xl font-semibold mb-3 flex items-center">
+                        <i class="fas fa-shield-alt text-purple-500 mr-3"></i> Privacy & Security
+                    </h4>
+                    <div class="space-y-2 text-gray-400">
+                        <p>We take your privacy seriously:</p>
+                        <ul class="list-disc list-inside space-y-1">
+                            <li>Your data is encrypted and secure</li>
+                            <li>We never share your information with third parties</li>
+                            <li>You can opt-out of marketing communications</li>
+                            <li>We comply with data protection regulations</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- FAQ Modal -->
+    <div id="faq-modal" class="modal fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50 hidden">
+        <div class="modal-content bg-gray-900 border border-gray-800 rounded-lg p-8 max-w-2xl w-full mx-4 max-h-[80vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6 sticky top-0 bg-gray-900 py-2">
+                <h3 class="text-2xl font-bold">Frequently Asked Questions</h3>
+                <button onclick="closeFAQModal()" class="text-gray-500 hover:text-white">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="space-y-4">
+                <!-- Ordering Questions -->
+                <div class="faq-item bg-gray-800 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <span class="text-lg font-semibold">How do I place an order?</span>
+                        <i class="fas fa-chevron-down faq-icon text-purple-500"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-4">
+                        <p class="text-gray-400">To place an order:</p>
+                        <ol class="list-decimal list-inside space-y-2 text-gray-400 mt-2">
+                            <li>Browse our products and select items you want to purchase</li>
+                            <li>Add items to your cart</li>
+                            <li>Review your cart and proceed to checkout</li>
+                            <li>Fill in your shipping and payment details</li>
+                            <li>Confirm your order</li>
+                        </ol>
+                    </div>
+                </div>
+
+                <!-- Payment Questions -->
+                <div class="faq-item bg-gray-800 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <span class="text-lg font-semibold">What payment methods do you accept?</span>
+                        <i class="fas fa-chevron-down faq-icon text-purple-500"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-4">
+                        <p class="text-gray-400">We accept various payment methods:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-400 mt-2">
+                            <li>Cash on Delivery (COD)</li>
+                            <li>Credit/Debit Cards (Visa, MasterCard)</li>
+                            <li>Mobile Wallets (Vodafone Cash, Fawry)</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Shipping Questions -->
+                <div class="faq-item bg-gray-800 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <span class="text-lg font-semibold">How long does shipping take?</span>
+                        <i class="fas fa-chevron-down faq-icon text-purple-500"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-4">
+                        <p class="text-gray-400">Shipping information:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-400 mt-2">
+                            <li>Orders are processed within 24 hours</li>
+                            <li>Delivery takes 2-3 business days</li>
+                            <li>Tracking number provided after shipping</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Returns Questions -->
+                <div class="faq-item bg-gray-800 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <span class="text-lg font-semibold">What is your return policy?</span>
+                        <i class="fas fa-chevron-down faq-icon text-purple-500"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-4">
+                        <p class="text-gray-400">Our return policy:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-400 mt-2">
+                            <li>3-day return/exchange window</li>
+                            <li>Items must be unworn with original tags</li>
+                            <li>Contact customer service for return authorization</li>
+                            <li>Refunds processed within 5-7 business days</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Size Questions -->
+                <div class="faq-item bg-gray-800 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <span class="text-lg font-semibold">How do I choose the right size?</span>
+                        <i class="fas fa-chevron-down faq-icon text-purple-500"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-4">
+                        <p class="text-gray-400">Size guide:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-400 mt-2">
+                            <li>Check our size chart for measurements</li>
+                            <li>Measure yourself before ordering</li>
+                            <li>Consider the fit (regular, slim, oversized)</li>
+                            <li>Read product descriptions for specific sizing notes</li>
+                        </ul>
+                    </div>
+                </div>
+
+                <!-- Contact Questions -->
+                <div class="faq-item bg-gray-800 rounded-lg">
+                    <button class="w-full px-6 py-4 text-left flex justify-between items-center" onclick="toggleFAQ(this)">
+                        <span class="text-lg font-semibold">How can I contact customer service?</span>
+                        <i class="fas fa-chevron-down faq-icon text-purple-500"></i>
+                    </button>
+                    <div class="faq-answer px-6 pb-4">
+                        <p class="text-gray-400">Contact us through:</p>
+                        <ul class="list-disc list-inside space-y-2 text-gray-400 mt-2">
+                            <li>Email: support@dripking.com</li>
+                            <li>Phone: +1 (123) 456-7890</li>
+                            <li>Social Media: Instagram, TikTok, Facebook</li>
+                            <li>Live Chat: Available 24/7 on our website</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="main.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <script>
         const firebaseConfig = {
             apiKey: "AIzaSyBrNCHrvIrQa2yAuk-mVnVCNFZ4W2otDZQ",
@@ -280,17 +739,14 @@
 
         async function getProducts() {
             const snapshot = await db.collection('products').orderBy('createdAt', 'desc').get();
-            return snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-        }
-
-        async function getProductById(productId) {
-            const doc = await db.collection('products').doc(productId).get();
-            if (!doc.exists) return null;
-            return { id: doc.id, ...doc.data() };
+            return snapshot.docs.map(doc => ({
+                id: doc.id,
+                ...doc.data()
+            }));
         }
 
         function displayProducts(products) {
-            const productsDiv = document.getElementById('products');
+            const productsDiv = document.getElementById('products-container');
             productsDiv.innerHTML = '';
 
             products.forEach(product => {
@@ -307,7 +763,9 @@
                     <div class="product-info">
                         <h3 class="product-name">${product.name}</h3>
                         <p class="product-price">${priceDisplay}</p>
-                        <a href="product.html?id=${product.id}" class="view-button">View Details</a>
+                        <a href="product.html?id=${product.id}" class="view-button">
+                            <i class="fas fa-eye mr-2"></i>View Details
+                        </a>
                     </div>
                 `;
                 productsDiv.appendChild(productCard);
@@ -319,7 +777,107 @@
             displayProducts(products);
         }).catch(error => {
             console.error('Error loading products:', error);
-            document.getElementById('products').innerHTML = '<p class="error">Error loading products. Please try again later.</p>';
+            document.getElementById('products-container').innerHTML = '<p class="error">Error loading products. Please try again later.</p>';
+        });
+
+        function showShippingPolicy(event) {
+            event.preventDefault();
+            const modal = document.getElementById('shipping-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+        }
+
+        function closeShippingModal() {
+            const modal = document.getElementById('shipping-modal');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function showTerms(event) {
+            event.preventDefault();
+            const modal = document.getElementById('terms-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+        }
+
+        function closeTermsModal() {
+            const modal = document.getElementById('terms-modal');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function showFAQ(event) {
+            event.preventDefault();
+            const modal = document.getElementById('faq-modal');
+            modal.classList.remove('hidden');
+            setTimeout(() => {
+                modal.classList.add('active');
+            }, 10);
+        }
+
+        function closeFAQModal() {
+            const modal = document.getElementById('faq-modal');
+            modal.classList.remove('active');
+            setTimeout(() => {
+                modal.classList.add('hidden');
+            }, 300);
+        }
+
+        function toggleFAQ(button) {
+            const faqItem = button.parentElement;
+            const answer = button.nextElementSibling;
+
+            // Toggle active class on the FAQ item
+            faqItem.classList.toggle('active');
+
+            // Toggle active class on the answer
+            answer.classList.toggle('active');
+        }
+
+        // Close modals when clicking outside
+        document.querySelectorAll('.modal').forEach(modal => {
+            modal.addEventListener('click', function(e) {
+                if (e.target === this) {
+                    if (this.id === 'shipping-modal') closeShippingModal();
+                    if (this.id === 'terms-modal') closeTermsModal();
+                    if (this.id === 'faq-modal') closeFAQModal();
+                }
+            });
+        });
+
+        // Mobile Menu Functions
+        const mobileMenuButton = document.getElementById('mobile-menu-button');
+        const closeMobileMenuButton = document.getElementById('close-mobile-menu');
+        const mobileMenu = document.getElementById('mobile-menu');
+        const mobileMenuOverlay = document.getElementById('mobile-menu-overlay');
+
+        function openMobileMenu() {
+            mobileMenu.classList.add('active');
+            mobileMenuOverlay.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMobileMenu() {
+            mobileMenu.classList.remove('active');
+            mobileMenuOverlay.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        mobileMenuButton.addEventListener('click', openMobileMenu);
+        closeMobileMenuButton.addEventListener('click', closeMobileMenu);
+        mobileMenuOverlay.addEventListener('click', closeMobileMenu);
+
+        // Close mobile menu when clicking on links
+        document.querySelectorAll('#mobile-menu a').forEach(link => {
+            link.addEventListener('click', closeMobileMenu);
         });
     </script>
 </body>
