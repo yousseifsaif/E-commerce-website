@@ -20,37 +20,37 @@
         
         .product-card:hover {
             transform: translateY(-5px);
-            box-shadow: 0 10px 20px rgba(0,0,0,0.3);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.3);
             border-color: #9333ea;
         }
-
+        
         .product-image {
             width: 100%;
             height: 200px;
             object-fit: cover;
             transition: transform 0.3s ease;
         }
-
+        
         .product-card:hover .product-image {
             transform: scale(1.05);
         }
-
+        
         .product-info {
             padding: 1.5rem;
             background: linear-gradient(to bottom, #111, #000);
         }
-
+        
         .product-name {
             font-size: 1.2rem;
             margin-bottom: 0.5rem;
             color: #fff;
             transition: color 0.3s ease;
         }
-
+        
         .product-card:hover .product-name {
             color: #9333ea;
         }
-
+        
         .product-price {
             font-size: 1.1rem;
             color: #fff;
@@ -59,18 +59,18 @@
             align-items: center;
             gap: 0.5rem;
         }
-
+        
         .price-amount {
             color: #fff;
             font-weight: 600;
         }
-
+        
         .old-price {
             text-decoration: line-through;
             color: #666;
             font-size: 0.9rem;
         }
-
+        
         .product-badge {
             position: absolute;
             top: 1rem;
@@ -85,20 +85,34 @@
             opacity: 0;
             animation: badgeAppear 0.3s ease forwards;
         }
-
+        
         @keyframes badgeAppear {
             to {
                 transform: translateY(0);
                 opacity: 1;
             }
         }
-
-        .badge-popular { background: #3b82f6; }
-        .badge-best-seller { background: #f59e0b; }
-        .badge-new { background: #10b981; }
-        .badge-sale { background: #ef4444; }
-        .badge-out-of-stock { background: #6b7280; }
-
+        
+        .badge-popular {
+            background: #3b82f6;
+        }
+        
+        .badge-best-seller {
+            background: #f59e0b;
+        }
+        
+        .badge-new {
+            background: #10b981;
+        }
+        
+        .badge-sale {
+            background: #ef4444;
+        }
+        
+        .badge-out-of-stock {
+            background: #6b7280;
+        }
+        
         .view-button {
             display: inline-block;
             padding: 0.8rem 1.5rem;
@@ -111,60 +125,57 @@
             width: 100%;
             text-align: center;
         }
-
+        
         .view-button:hover {
             transform: translateY(-2px);
             background: #7e22ce;
             box-shadow: 0 5px 15px rgba(147, 51, 234, 0.3);
         }
-
+        
         .loading {
             text-align: center;
             padding: 2rem;
             font-size: 1.2rem;
             color: #fff;
         }
-
+        
         .loading i {
             animation: spin 1s linear infinite;
             color: #9333ea;
         }
-
+        
         @keyframes spin {
-            from { transform: rotate(0deg); }
-            to { transform: rotate(360deg); }
+            from {
+                transform: rotate(0deg);
+            }
+            to {
+                transform: rotate(360deg);
+            }
         }
-
+        
         @media (max-width: 768px) {
             .container {
                 padding: 1rem;
             }
-
             .products-grid {
                 grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
                 gap: 1rem;
             }
-
             h1 {
                 font-size: 2rem;
             }
-
             .product-card {
                 border-width: 1px;
             }
-
             .product-info {
                 padding: 1rem;
             }
-
             .product-name {
                 font-size: 1.1rem;
             }
-
             .product-price {
                 font-size: 1rem;
             }
-
             .view-button {
                 padding: 0.7rem 1.2rem;
                 font-size: 0.9rem;
@@ -305,8 +316,13 @@
         }
         
         @keyframes crownFloat {
-            0%, 100% { transform: translateY(0) rotate(0deg); }
-            50% { transform: translateY(-5px) rotate(5deg); }
+            0%,
+            100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            50% {
+                transform: translateY(-5px) rotate(5deg);
+            }
         }
         
         .logo-glow {
@@ -323,36 +339,39 @@
         }
         
         @keyframes glowPulse {
-            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
-            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+            0%,
+            100% {
+                opacity: 0.5;
+                transform: translate(-50%, -50%) scale(1);
+            }
+            50% {
+                opacity: 0.8;
+                transform: translate(-50%, -50%) scale(1.1);
+            }
         }
         
         @media (max-width: 640px) {
             .logo-container {
                 padding: 0.4rem 0.8rem;
             }
-
             .logo-text {
                 font-size: 1.5rem;
             }
-
             .crown-icon {
                 font-size: 1.1rem;
                 top: -10px;
                 right: -10px;
             }
-
             nav {
                 padding-left: 1rem;
                 padding-right: 1rem;
             }
         }
-
+        
         @media (max-width: 480px) {
             .logo-text {
                 font-size: 1.25rem;
             }
-
             .crown-icon {
                 font-size: 1rem;
                 top: -8px;
@@ -782,15 +801,15 @@
             productsDiv.innerHTML = '';
 
             products.forEach(product => {
-                const badgeClass = product.badge ? `badge-${product.badge.toLowerCase().replace(/\s+/g, '-')}` : '';
-                const priceDisplay = product.badge === 'Sale' && product.oldPrice 
-                    ? `<span class="old-price">EGP ${product.oldPrice}</span><span class="price-amount">EGP ${product.price}</span>`
-                    : `<span class="price-amount">EGP ${product.price}</span>`;
+                        const badgeClass = product.badge ? `badge-${product.badge.toLowerCase().replace(/\s+/g, '-')}` : '';
+                        const priceDisplay = product.badge === 'Sale' && product.oldPrice ?
+                            `<span class="old-price">EGP ${product.oldPrice}</span><span class="price-amount">EGP ${product.price}</span>` :
+                            `<span class="price-amount">EGP ${product.price}</span>`;
 
-                const productCard = document.createElement('a');
-                productCard.href = `product.html?id=${product.id}`;
-                productCard.className = 'product-card';
-                productCard.innerHTML = `
+                        const productCard = document.createElement('a');
+                        productCard.href = `product.html?id=${product.id}`;
+                        productCard.className = 'product-card';
+                        productCard.innerHTML = `
                     ${product.badge ? `<span class="product-badge ${badgeClass}">${product.badge}</span>` : ''}
                     <img src="${product.image}" alt="${product.name}" class="product-image">
                     <div class="product-info">
