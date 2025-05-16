@@ -1,16 +1,16 @@
 <!DOCTYPE html>
-<html lang="ar" dir="rtl">
+<html lang="en">
 
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>تسجيل الدخول - Drip King</title>
+    <title>Login - Drip King</title>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-auth.js"></script>
     <script src="https://www.gstatic.com/firebasejs/8.10.1/firebase-firestore.js"></script>
     <style>
         body {
-            background: #111;
+            background: #000;
             color: #fff;
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             text-align: center;
@@ -24,17 +24,24 @@
         }
 
         .login-container {
-            background: #1a1a1a;
+            background: #111;
             padding: 2rem;
             border-radius: 10px;
             box-shadow: 0 0 20px rgba(0,0,0,0.3);
             width: 100%;
             max-width: 400px;
+            animation: fadeIn 0.5s ease-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(20px); }
+            to { opacity: 1; transform: translateY(0); }
         }
 
         h2 {
             margin-bottom: 2rem;
             color: #fff;
+            font-size: 1.8rem;
         }
 
         input {
@@ -47,44 +54,67 @@
             color: #fff;
             font-size: 16px;
             box-sizing: border-box;
+            transition: all 0.3s ease;
         }
 
         input:focus {
             outline: none;
-            border-color: #4CAF50;
+            border-color: #fff;
+            box-shadow: 0 0 0 3px rgba(255, 255, 255, 0.1);
         }
 
         button {
             width: 100%;
             padding: 12px;
-            background: #4CAF50;
-            color: white;
+            background: #fff;
+            color: #000;
             border: none;
             border-radius: 5px;
             cursor: pointer;
             font-size: 16px;
             margin-top: 1rem;
-            transition: background 0.3s ease;
+            transition: all 0.3s ease;
         }
 
         button:hover {
-            background: #45a049;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.2);
         }
 
         button:disabled {
-            background: #cccccc;
+            background: #333;
+            color: #666;
             cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
         }
 
         .error-message {
             color: #ff4444;
             margin-top: 1rem;
             display: none;
+            animation: shake 0.5s ease-in-out;
+        }
+
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            25% { transform: translateX(-5px); }
+            75% { transform: translateX(5px); }
         }
 
         .loading {
             display: none;
             margin-top: 1rem;
+            color: #fff;
+        }
+
+        .loading i {
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
         }
     </style>
     <script>
@@ -100,7 +130,6 @@
         firebase.initializeApp(firebaseConfig);
         const db = firebase.firestore();
 
-        // إذا كان المستخدم مسجل دخول بالفعل، وجهه مباشرة إلى صفحة الإدارة
         firebase.auth().onAuthStateChanged(function(user) {
             if (user) {
                 window.location.href = "admin.html";
@@ -122,12 +151,14 @@
 
 <body>
     <div class="login-container">
-        <h2>تسجيل الدخول</h2>
-        <input type="email" id="email" placeholder="البريد الإلكتروني" required>
-        <input type="password" id="password" placeholder="كلمة المرور" required>
-        <button onclick="login()" id="loginButton">تسجيل الدخول</button>
+        <h2>Login</h2>
+        <input type="email" id="email" placeholder="Email" required>
+        <input type="password" id="password" placeholder="Password" required>
+        <button onclick="login()" id="loginButton">Login</button>
         <div id="errorMessage" class="error-message"></div>
-        <div id="loading" class="loading">جاري تسجيل الدخول...</div>
+        <div id="loading" class="loading">
+            <i class="fas fa-spinner"></i> Logging in...
+        </div>
     </div>
 
     <script>
@@ -149,26 +180,23 @@
             const loading = document.getElementById('loading');
             const errorMessage = document.getElementById('errorMessage');
 
-            // Reset error message
             errorMessage.style.display = 'none';
 
-            // Validate inputs
             if (!email || !password) {
-                showError('الرجاء ملء جميع الحقول');
+                showError('Please fill in all fields');
                 return;
             }
 
             if (!validateEmail(email)) {
-                showError('الرجاء إدخال بريد إلكتروني صحيح');
+                showError('Please enter a valid email address');
                 return;
             }
 
             if (password.length < 6) {
-                showError('كلمة المرور يجب أن تكون 6 أحرف على الأقل');
+                showError('Password must be at least 6 characters');
                 return;
             }
 
-            // Disable button and show loading
             loginButton.disabled = true;
             loading.style.display = 'block';
 

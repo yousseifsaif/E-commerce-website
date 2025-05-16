@@ -479,7 +479,7 @@
                     </a>
                     <div class="cart-item-details">
                         <a href="product.html?id=${item.id}" class="cart-item-name font-medium truncate hover:text-purple-400 transition block">${item.name}</a>
-                        ${item.size ? `<p class="cart-item-size text-gray-400">المقاس: ${item.size}</p>` : ''}
+                        ${item.size ? `<p class="cart-item-size text-gray-400">Size: ${item.size}</p>` : ''}
                         <p class="cart-item-price text-gray-400">EGP ${item.price.toFixed(2)}</p>
                     </div>
                     <div class="cart-item-actions flex items-center">
@@ -552,7 +552,7 @@
                 notes: customerData.notes,
                 cart: cart.map(item => ({
                     name: item.name,
-                    size: item.size || 'بدون مقاس',
+                    size: item.size || 'No Size',
                     quantity: item.quantity
                 }))
             };
@@ -577,17 +577,17 @@
                     cart = [];
                     successModal.classList.remove("hidden");
                 } else {
-                    throw new Error(response.data.message || "فشل في إرسال الطلب");
+                    throw new Error(response.data.message || "Failed to submit order");
                 }
             } catch (error) {
-                console.error("خطأ في معالجة الطلب:", error);
-                alert("تم استلام طلبك! (قد ترى رسالة تقنية ولكن طلبك مؤكد)");
+                console.error("Order processing error:", error);
+                alert("Your order has been received! (You may see a technical message, but your order is confirmed)");
                 localStorage.removeItem("cart");
                 cart = [];
                 successModal.classList.remove("hidden");
             } finally {
                 confirmBtn.disabled = false;
-                confirmBtn.innerHTML = '<i class="fas fa-credit-card mr-2"></i> تأكيد الطلب';
+                confirmBtn.innerHTML = '<i class="fas fa-credit-card mr-2"></i> Confirm Order';
             }
         });
 
