@@ -374,18 +374,21 @@
                 <div class="mb-6">
                     <h3 class="text-lg font-semibold mb-3">Quantity:</h3>
                     <div class="flex items-center">
-                        <button onclick="updateQuantity(-1)" class="quantity-btn bg-gray-800 mr-2">
+                        <button onclick="updateQuantity(-1)" class="quantity-btn bg-gray-800 mr-2" ${product.badge === 'Out of Stock' ? 'disabled' : ''}>
                             <i class="fas fa-minus"></i>
                         </button>
                         <span id="quantity" class="text-xl mx-4 w-8 text-center">1</span>
-                        <button onclick="updateQuantity(1)" class="quantity-btn bg-gray-800 ml-2">
+                        <button onclick="updateQuantity(1)" class="quantity-btn bg-gray-800 ml-2" ${product.badge === 'Out of Stock' ? 'disabled' : ''}>
                             <i class="fas fa-plus"></i>
                         </button>
                     </div>
                 </div>
                 
-                <button onclick="addToCart('${product.id}')" class="add-to-cart-btn w-full bg-white hover:bg-gray-200 text-black font-semibold py-3 px-6 rounded-lg transition mb-6">
-                    <i class="fas fa-shopping-cart mr-2"></i> Add to Cart
+                <button onclick="addToCart('${product.id}')" 
+                    class="add-to-cart-btn w-full ${product.badge === 'Out of Stock' ? 'bg-gray-600 cursor-not-allowed opacity-50' : 'bg-white hover:bg-gray-200'} text-black font-semibold py-3 px-6 rounded-lg transition mb-6"
+                    ${product.badge === 'Out of Stock' ? 'disabled' : ''}>
+                    <i class="fas fa-shopping-cart mr-2"></i> 
+                    ${product.badge === 'Out of Stock' ? 'Out of Stock' : 'Add to Cart'}
                 </button>
                 
                 <div class="border-t border-gray-800 pt-6">
@@ -444,6 +447,9 @@
     // تحديث الكمية
     let quantity = 1;
     function updateQuantity(change) {
+        const product = document.querySelector('.product-badge')?.textContent;
+        if (product === 'Out of Stock') return;
+        
         quantity += change;
         if (quantity < 1) quantity = 1;
         if (quantity > 10) quantity = 10;
@@ -456,6 +462,10 @@
         
         if (!product) {
             alert("Product not found");
+            return;
+        }
+
+        if (product.badge === 'Out of Stock') {
             return;
         }
 
