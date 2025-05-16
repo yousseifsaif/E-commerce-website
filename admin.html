@@ -53,6 +53,11 @@
                     <span class="text-red-500 text-sm hidden" id="priceError"></span>
                 </div>
 
+                <div id="oldPriceContainer" class="hidden">
+                    <input class="w-full p-2 rounded bg-gray-700 text-sm sm:text-base" type="number" id="oldPrice" placeholder="السعر القديم" min="0" step="0.01">
+                    <span class="text-red-500 text-sm hidden" id="oldPriceError"></span>
+                </div>
+
                 <div>
                     <label class="block mb-2 text-sm sm:text-base">الشارة:</label>
                     <select id="badge" class="w-full p-2 rounded bg-gray-700 text-sm sm:text-base">
@@ -141,14 +146,21 @@
             const name = document.getElementById('name').value;
             const price = parseFloat(document.getElementById('price').value);
             const badge = document.getElementById('badge').value;
+            const oldPrice = badge === 'Sale' ? parseFloat(document.getElementById('oldPrice').value) : null;
             const sizes = Array.from(document.querySelectorAll('.size-checkbox:checked')).map(cb => cb.value);
             const description = document.getElementById('description').value;
-            // جمع كل روابط الصور
             const gallery = Array.from(document.querySelectorAll('.gallery-link')).map(input => input.value).filter(Boolean);
             const image = gallery[0] || '';
 
             if (!name || !price || !image) {
                 errorMessage.textContent = 'يرجى ملء جميع الحقول المطلوبة.';
+                errorMessage.classList.remove('hidden');
+                setTimeout(() => errorMessage.classList.add('hidden'), 3000);
+                return;
+            }
+
+            if (badge === 'Sale' && (!oldPrice || oldPrice <= price)) {
+                errorMessage.textContent = 'السعر القديم يجب أن يكون أكبر من السعر الجديد.';
                 errorMessage.classList.remove('hidden');
                 setTimeout(() => errorMessage.classList.add('hidden'), 3000);
                 return;
@@ -160,17 +172,16 @@
             try {
                 if (editProductId) {
                     await db.collection("products").doc(editProductId).update({
-                        name, price, sizes, image, description, gallery, badge
+                        name, price, oldPrice, sizes, image, description, gallery, badge
                     });
                 } else {
                     await db.collection("products").add({
-                        name, price, sizes, image, description, gallery, badge,
+                        name, price, oldPrice, sizes, image, description, gallery, badge,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 }
                 form.reset();
                 Array.from(document.querySelectorAll('.size-checkbox')).forEach(cb => cb.checked = false);
-                // أعد input واحد فقط للصور بعد الحفظ
                 galleryInputs.innerHTML = `<div class="flex gap-2 mb-2">
                     <input class="w-full p-2 rounded bg-gray-700 text-sm sm:text-base gallery-link" type="url" placeholder="رابط صورة المنتج" required>
                     <button type="button" class="remove-gallery-input bg-red-600 hover:bg-red-700 text-white px-2 rounded text-sm sm:text-base">-</button>
@@ -178,6 +189,7 @@
                 editProductId = null;
                 submitButton.textContent = 'إضافة المنتج';
                 cancelEditButton.classList.add('hidden');
+                document.getElementById('oldPriceContainer').classList.add('hidden');
                 successMessage.classList.remove('hidden');
                 setTimeout(() => successMessage.classList.add('hidden'), 2000);
                 loadProducts();
@@ -201,6 +213,7 @@
             editProductId = null;
             submitButton.textContent = 'إضافة المنتج';
             cancelEditButton.classList.add('hidden');
+            document.getElementById('oldPriceContainer').classList.add('hidden');
         });
 
         // حذف منتج
@@ -215,6 +228,10 @@
             document.getElementById('name').value = product.name;
             document.getElementById('price').value = product.price;
             document.getElementById('badge').value = product.badge || '';
+            if (product.badge === 'Sale') {
+                document.getElementById('oldPriceContainer').classList.remove('hidden');
+                document.getElementById('oldPrice').value = product.oldPrice || '';
+            }
             document.getElementById('description').value = product.description || '';
             Array.from(document.querySelectorAll('.size-checkbox')).forEach(cb => {
                 cb.checked = product.sizes && product.sizes.includes(cb.value);
@@ -295,6 +312,21 @@
             html += `</tbody></table></div></div></div>`;
             container.innerHTML = html;
         }
+
+        // Add event listener for badge selection
+        document.getElementById('badge').addEventListener('change', function() {
+            const oldPriceContainer = document.getElementById('oldPriceContainer');
+            const oldPriceInput = document.getElementById('oldPrice');
+            
+            if (this.value === 'Sale') {
+                oldPriceContainer.classList.remove('hidden');
+                oldPriceInput.required = true;
+            } else {
+                oldPriceContainer.classList.add('hidden');
+                oldPriceInput.required = false;
+                oldPriceInput.value = '';
+            }
+        });
 
         loadProducts();
     </script>
