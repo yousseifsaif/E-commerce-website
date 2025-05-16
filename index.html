@@ -15,6 +15,7 @@
             transition: all 0.3s ease;
             position: relative;
             border: 1px solid #333;
+            cursor: pointer;
         }
         
         .product-card:hover {
@@ -53,10 +54,15 @@
         .product-price {
             font-size: 1.1rem;
             color: #fff;
-            margin-bottom: 1rem;
+            margin-bottom: 0.5rem;
             display: flex;
             align-items: center;
             gap: 0.5rem;
+        }
+
+        .price-amount {
+            color: #fff;
+            font-weight: 600;
         }
 
         .old-price {
@@ -752,10 +758,11 @@
             products.forEach(product => {
                 const badgeClass = product.badge ? `badge-${product.badge.toLowerCase().replace(/\s+/g, '-')}` : '';
                 const priceDisplay = product.badge === 'Sale' && product.oldPrice 
-                    ? `<span class="old-price">$${product.oldPrice}</span>$${product.price}`
-                    : `$${product.price}`;
+                    ? `<span class="old-price">EGP ${product.oldPrice}</span><span class="price-amount">EGP ${product.price}</span>`
+                    : `<span class="price-amount">EGP ${product.price}</span>`;
 
-                const productCard = document.createElement('div');
+                const productCard = document.createElement('a');
+                productCard.href = `product.html?id=${product.id}`;
                 productCard.className = 'product-card';
                 productCard.innerHTML = `
                     ${product.badge ? `<span class="product-badge ${badgeClass}">${product.badge}</span>` : ''}
@@ -763,9 +770,6 @@
                     <div class="product-info">
                         <h3 class="product-name">${product.name}</h3>
                         <p class="product-price">${priceDisplay}</p>
-                        <a href="product.html?id=${product.id}" class="view-button">
-                            <i class="fas fa-eye mr-2"></i>View Details
-                        </a>
                     </div>
                 `;
                 productsDiv.appendChild(productCard);
