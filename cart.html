@@ -553,7 +553,8 @@
                 cart: cart.map(item => ({
                     name: item.name,
                     size: item.size || 'No Size',
-                    quantity: item.quantity
+                    quantity: item.quantity,
+                    price: item.price
                 }))
             };
 
@@ -563,7 +564,7 @@
 
             try {
                 const response = await axios.post(
-                    'https://script.google.com/macros/s/AKfycbwIwppxQfgVCnLot0XBa5UDPEhKJE4rjlaU6msDy6r11TgQvw4yeD5NlJfNc0RrBv6C/exec',
+                    'https://script.google.com/macros/s/AKfycbwBp8DxGNj76q0b0LN10vxHGWi_wnLbg6GOJQG2hnAH3wGJMwpiVn4LsVZR15E3h4Kc/exec',
                     { data: JSON.stringify(orderData) },
                     {
                         headers: {
