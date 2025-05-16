@@ -32,6 +32,42 @@
             justify-content: center;
         }
         
+        .product-badge {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+            z-index: 10;
+        }
+        
+        .badge-popular {
+            background-color: #3b82f6;
+            color: white;
+        }
+        
+        .badge-best-seller {
+            background-color: #f59e0b;
+            color: white;
+        }
+        
+        .badge-new {
+            background-color: #10b981;
+            color: white;
+        }
+        
+        .badge-sale {
+            background-color: #ef4444;
+            color: white;
+        }
+        
+        .badge-out-of-stock {
+            background-color: #6b7280;
+            color: white;
+        }
+        
         .hero-button {
             transition: all 0.3s ease;
             animation: pulse 2s infinite;
@@ -592,8 +628,12 @@
         }
         let html = '';
         products.forEach(product => {
+            const badgeClass = product.badge ? `badge-${product.badge.toLowerCase().replace(/\s+/g, '-')}` : '';
+            const badgeText = product.badge || '';
+            
             html += `
-            <div class="product-card bg-gray-900 rounded-lg shadow-lg p-4 flex flex-col items-center">
+            <div class="product-card bg-gray-900 rounded-lg shadow-lg p-4 flex flex-col items-center relative">
+                ${badgeText ? `<span class="product-badge ${badgeClass}">${badgeText}</span>` : ''}
                 <a href="product.html?id=${product.id}" class="w-full">
                     <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover rounded mb-4">
                     <h3 class="text-lg font-bold mb-2 text-center">${product.name}</h3>

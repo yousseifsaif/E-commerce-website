@@ -54,6 +54,18 @@
                 </div>
 
                 <div>
+                    <label class="block mb-2 text-sm sm:text-base">الشارة:</label>
+                    <select id="badge" class="w-full p-2 rounded bg-gray-700 text-sm sm:text-base">
+                        <option value="">بدون شارة</option>
+                        <option value="Popular">الأكثر شعبية</option>
+                        <option value="Best Seller">الأكثر مبيعاً</option>
+                        <option value="New">جديد</option>
+                        <option value="Sale">خصم</option>
+                        <option value="Out of Stock">نفذت الكمية</option>
+                    </select>
+                </div>
+
+                <div>
                     <label class="block mb-2 text-sm sm:text-base">المقاسات المتاحة:</label>
                     <div class="flex flex-wrap gap-2 sm:gap-4">
                         <label class="text-sm sm:text-base"><input type="checkbox" class="size-checkbox" value="S"> S</label>
@@ -128,6 +140,7 @@
             e.preventDefault();
             const name = document.getElementById('name').value;
             const price = parseFloat(document.getElementById('price').value);
+            const badge = document.getElementById('badge').value;
             const sizes = Array.from(document.querySelectorAll('.size-checkbox:checked')).map(cb => cb.value);
             const description = document.getElementById('description').value;
             // جمع كل روابط الصور
@@ -147,11 +160,11 @@
             try {
                 if (editProductId) {
                     await db.collection("products").doc(editProductId).update({
-                        name, price, sizes, image, description, gallery
+                        name, price, sizes, image, description, gallery, badge
                     });
                 } else {
                     await db.collection("products").add({
-                        name, price, sizes, image, description, gallery,
+                        name, price, sizes, image, description, gallery, badge,
                         createdAt: firebase.firestore.FieldValue.serverTimestamp()
                     });
                 }
@@ -201,6 +214,7 @@
         function editProduct(product, id) {
             document.getElementById('name').value = product.name;
             document.getElementById('price').value = product.price;
+            document.getElementById('badge').value = product.badge || '';
             document.getElementById('description').value = product.description || '';
             Array.from(document.querySelectorAll('.size-checkbox')).forEach(cb => {
                 cb.checked = product.sizes && product.sizes.includes(cb.value);

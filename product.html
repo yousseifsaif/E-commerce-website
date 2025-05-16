@@ -235,6 +235,40 @@
                 right: -12px;
             }
         }
+
+        .product-badge {
+            display: inline-block;
+            padding: 6px 12px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .badge-popular {
+            background-color: #3b82f6;
+            color: white;
+        }
+
+        .badge-best-seller {
+            background-color: #f59e0b;
+            color: white;
+        }
+
+        .badge-new {
+            background-color: #10b981;
+            color: white;
+        }
+
+        .badge-sale {
+            background-color: #ef4444;
+            color: white;
+        }
+
+        .badge-out-of-stock {
+            background-color: #6b7280;
+            color: white;
+        }
     </style>
 </head>
 
@@ -311,6 +345,7 @@
             
             <div class="bg-gray-900 p-4 sm:p-6 rounded-lg border border-gray-800">
                 <h1 class="text-2xl sm:text-3xl font-bold mb-4">${product.name}</h1>
+                ${product.badge ? `<span class="product-badge badge-${product.badge.toLowerCase().replace(/\s+/g, '-')}">${product.badge}</span>` : ''}
                 <p class="text-gray-400 mb-4">${product.category || ''}</p>
                 
                 <div class="flex items-center mb-6">
