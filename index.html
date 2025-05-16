@@ -270,35 +270,43 @@
         .logo-container {
             position: relative;
             display: inline-block;
+            padding: 0.5rem 1rem;
+            background: rgba(0, 0, 0, 0.5);
+            border-radius: 10px;
+            backdrop-filter: blur(5px);
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
+        }
+        
+        .logo-container:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15);
         }
         
         .logo-text {
-            font-size: 2rem;
+            font-size: 1.75rem;
             font-weight: bold;
             background: linear-gradient(45deg, #9333ea, #4f46e5);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             position: relative;
             z-index: 1;
+            letter-spacing: 1px;
         }
         
         .crown-icon {
             position: absolute;
-            top: -15px;
-            right: -15px;
-            font-size: 1.5rem;
+            top: -12px;
+            right: -12px;
+            font-size: 1.25rem;
             color: #fbbf24;
             animation: crownFloat 2s ease-in-out infinite;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.2));
         }
         
         @keyframes crownFloat {
-            0%,
-            100% {
-                transform: translateY(0) rotate(0deg);
-            }
-            50% {
-                transform: translateY(-5px) rotate(5deg);
-            }
+            0%, 100% { transform: translateY(0) rotate(0deg); }
+            50% { transform: translateY(-5px) rotate(5deg); }
         }
         
         .logo-glow {
@@ -306,22 +314,49 @@
             top: 50%;
             left: 50%;
             transform: translate(-50%, -50%);
-            width: 100%;
-            height: 100%;
+            width: 120%;
+            height: 120%;
             background: radial-gradient(circle, rgba(147, 51, 234, 0.2) 0%, transparent 70%);
             filter: blur(10px);
             animation: glowPulse 2s ease-in-out infinite;
+            z-index: 0;
         }
         
         @keyframes glowPulse {
-            0%,
-            100% {
-                opacity: 0.5;
-                transform: translate(-50%, -50%) scale(1);
+            0%, 100% { opacity: 0.5; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.8; transform: translate(-50%, -50%) scale(1.1); }
+        }
+        
+        @media (max-width: 640px) {
+            .logo-container {
+                padding: 0.4rem 0.8rem;
             }
-            50% {
-                opacity: 0.8;
-                transform: translate(-50%, -50%) scale(1.1);
+
+            .logo-text {
+                font-size: 1.5rem;
+            }
+
+            .crown-icon {
+                font-size: 1.1rem;
+                top: -10px;
+                right: -10px;
+            }
+
+            nav {
+                padding-left: 1rem;
+                padding-right: 1rem;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .logo-text {
+                font-size: 1.25rem;
+            }
+
+            .crown-icon {
+                font-size: 1rem;
+                top: -8px;
+                right: -8px;
             }
         }
         /* Mobile Menu Styles */
@@ -386,26 +421,17 @@
 <body class="bg-black text-gray-200">
     <!-- Navbar -->
     <nav class="bg-black border-b border-gray-800 px-4 sm:px-6 py-4 flex justify-between items-center sticky top-0 z-50">
-        <div class="logo-container">
+        <div class="logo-container mx-auto sm:mx-0">
             <div class="logo-glow"></div>
             <span class="logo-text text-xl sm:text-2xl">DRIP KING</span>
             <i class="fas fa-crown crown-icon"></i>
         </div>
-        <div class="hidden md:flex space-x-6">
-            <a href="#home" class="hover:text-gray-400">Home</a>
-            <a href="#products" class="hover:text-gray-400">Products</a>
-            <a href="#contact" class="hover:text-gray-400">Contact</a>
-        </div>
-        <div class="flex items-center space-x-4">
-            <button id="mobile-menu-button" class="md:hidden text-gray-400 hover:text-white">
-                <i class="fas fa-bars text-xl"></i>
-            </button>
-            <a href="login.html" class="text-gray-400 hover:text-white transition">
-                <i class="fas fa-user text-xl"></i>
+        <div class="flex items-center gap-4">
+            <a href="index.html" class="text-gray-400 hover:text-white transition text-sm sm:text-base">
+                <i class="fas fa-home mr-2"></i> Home
             </a>
-            <a href="cart.html" class="text-gray-400 hover:text-white transition relative">
-                <i class="fas fa-shopping-cart"></i>
-                <span id="cart-counter" class="cart-count hidden">0</span>
+            <a href="cart.html" class="text-gray-400 hover:text-white transition text-sm sm:text-base">
+                <i class="fas fa-shopping-cart mr-2"></i> Cart
             </a>
         </div>
     </nav>
