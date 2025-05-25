@@ -667,6 +667,13 @@
             transform: scaleX(0);
             z-index: 1000;
         }
+
+        img {
+            image-rendering: -webkit-optimize-contrast;
+            image-rendering: crisp-edges;
+            -webkit-font-smoothing: antialiased;
+            -moz-osx-font-smoothing: grayscale;
+        }
     </style>
 </head>
 
@@ -741,11 +748,7 @@
     <!-- Hero Section -->
     <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
         <div class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/50 z-10"></div>
-        <img src="https://i.ibb.co/1GfRFfwW/Logo.png" srcset="
-                 https://i.ibb.co/shN7s4L/640.jpg 640w,
-                 https://i.ibb.co/4RJzN7bZ/1024.jpg 1024w,
-                 https://i.ibb.co/CKJX8YQm/1920.jpg 1920w
-            " sizes="100vw" class="absolute w-full h-full object-cover rounded-[2rem] sm:rounded-[3rem]" style="object-position: center center;" alt="Banner">
+        <img src="https://i.ibb.co/1GfRFfwW/Logo.png" class="absolute w-full h-full object-cover rounded-[2rem] sm:rounded-[3rem]" style="object-position: center center;" alt="Banner">
 
         <a href="#products" class="hero-button z-20 bg-purple-600 text-white px-8 py-4 rounded-full hover:bg-purple-700 transition font-medium border border-purple-500
                   text-sm sm:text-base md:text-lg">
