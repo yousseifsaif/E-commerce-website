@@ -674,6 +674,20 @@
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
+
+        @media (max-width: 768px) {
+            #home {
+                height: 100vh;
+                min-height: 100vh;
+            }
+            
+            #home img {
+                height: 100%;
+                width: 100%;
+                object-fit: cover;
+                object-position: center;
+            }
+        }
     </style>
 </head>
 
@@ -746,14 +760,19 @@
     <div id="mobile-menu-overlay" class="mobile-menu-overlay"></div>
 
     <!-- Hero Section -->
-    <section id="home" class="relative h-screen flex items-center justify-center overflow-hidden">
+    <section id="home" class="relative w-full h-screen">
         <div class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/50 z-10"></div>
-        <img src="https://i.ibb.co/1GfRFfwW/Logo.png" class="absolute w-full h-full object-cover rounded-[2rem] sm:rounded-[3rem]" style="object-position: center center;" alt="Banner">
-
-        <a href="#products" class="hero-button z-20 bg-purple-600 text-white px-8 py-4 rounded-full hover:bg-purple-700 transition font-medium border border-purple-500
-                  text-sm sm:text-base md:text-lg">
-            Shop Now <i class="fas fa-arrow-right ml-2"></i>
-        </a>
+        <img 
+            src="https://i.ibb.co/1GfRFfwW/Logo.png" 
+            class="absolute top-0 left-0 w-full h-full object-cover"
+            alt="Banner"
+        >
+        <div class="relative z-20 h-full flex items-center justify-center">
+            <a href="#products" class="hero-button bg-purple-600 text-white px-8 py-4 rounded-full hover:bg-purple-700 transition font-medium border border-purple-500
+                      text-sm sm:text-base md:text-lg">
+                Shop Now <i class="fas fa-arrow-right ml-2"></i>
+            </a>
+        </div>
     </section>
 
     <!-- Products Section -->
