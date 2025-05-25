@@ -667,20 +667,19 @@
             transform: scaleX(0);
             z-index: 1000;
         }
-
+        
         img {
             image-rendering: -webkit-optimize-contrast;
             image-rendering: crisp-edges;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
         }
-
+        
         @media (max-width: 768px) {
             #home {
                 height: 100vh;
                 min-height: 100vh;
             }
-            
             #home img {
                 height: 100%;
                 width: 100%;
@@ -762,11 +761,7 @@
     <!-- Hero Section -->
     <section id="home" class="relative w-full h-screen">
         <div class="absolute inset-0 bg-gradient-to-b from-black/70 to-black/50 z-10"></div>
-        <img 
-            src="https://i.ibb.co/1GfRFfwW/Logo.png" 
-            class="absolute top-0 left-0 w-full h-full object-cover"
-            alt="Banner"
-        >
+        <img src="https://i.ibb.co/1GfRFfwW/Logo.png" class="absolute w-full h-full object-cover rounded-[2rem] sm:rounded-[3rem]" style="object-position: center center;" alt="Banner">
         <div class="relative z-20 h-full flex items-center justify-center">
             <a href="#products" class="hero-button bg-purple-600 text-white px-8 py-4 rounded-full hover:bg-purple-700 transition font-medium border border-purple-500
                       text-sm sm:text-base md:text-lg">
@@ -785,34 +780,50 @@
         </div>
     </section>
 
-    <footer id="contact" class=" bg-black py-12 px-4 border-t border-gray-900 ">
-        <div class="container mx-auto grid grid-cols-1 md:grid-cols-4 gap-8 ">
+    <footer id="contact" class="bg-black py-12 px-4 border-t border-gray-900">
+        <div class="max-w-7xl mx-auto grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-8">
+            <!-- Brand -->
             <div>
-                <h3 class="text-xl font-bold mb-4 text-white ">DRIP KING</h3>
-                <p class="text-gray-500 ">Always Got The Drip</p>
+                <h3 class="text-xl font-bold mb-4 text-white">DRIP KING</h3>
+                <p class="text-gray-500">Always Got The Drip</p>
             </div>
+            <!-- Quick Links -->
             <div>
-                <h4 class="text-lg font-semibold mb-4 text-white ">Quick Links</h4>
-                <ul class="space-y-2 ">
-                    <li><a href="#" onclick="showShippingPolicy(event)" class="text-gray-500 hover:text-gray-300 transition ">Shipping Policy</a></li>
-                    <li><a href="#" onclick="showTerms(event)" class="text-gray-500 hover:text-gray-300 transition ">Terms & Conditions</a></li>
-                    <li><a href="#" onclick="showFAQ(event)" class="text-gray-500 hover:text-gray-300 transition ">FAQ</a></li>
+                <h4 class="text-lg font-semibold mb-4 text-white">Quick Links</h4>
+                <ul class="space-y-2">
+                    <li><a href="#" onclick="showShippingPolicy(event)" class="text-gray-500 hover:text-gray-300 transition">Shipping Policy</a></li>
+                    <li><a href="#" onclick="showTerms(event)" class="text-gray-500 hover:text-gray-300 transition">Terms & Conditions</a></li>
+                    <li><a href="#" onclick="showFAQ(event)" class="text-gray-500 hover:text-gray-300 transition">FAQ</a></li>
                 </ul>
             </div>
+            <!-- Contact -->
             <div>
-                <h4 class="text-lg font-semibold mb-4 text-white ">Contact Us</h4>
-                <ul class="space-y-2 text-gray-500 ">
-                    <li class="flex items-center "><i class="fas fa-phone mr-2 "></i> (123) 456-7890</li>
-                    <li class="flex items-center "><i class="fas fa-envelope mr-2 "></i> info@dripking.com</li>
+                <h4 class="text-lg font-semibold mb-4 text-white">Contact Us</h4>
+                <ul class="space-y-2 text-gray-500">
+                    <li class="flex items-center"><i class="fas fa-phone mr-2"></i> (123) 456-7890</li>
+                    <li class="flex items-center"><i class="fas fa-envelope mr-2"></i> info@dripking.com</li>
                 </ul>
+                <div class="mt-6">
+                    <h4 class="text-lg font-semibold mb-2 text-white">Follow Us</h4>
+                    <div class="flex space-x-4">
+                        <a href="https://www.instagram.com/dripking.eggy/" target="_blank" class="hover:text-pink-500 transition"><i class="fab fa-instagram text-2xl"></i></a>
+                        <a href="https://www.tiktok.com/@drip.kingg11" target="_blank" class="hover:text-white transition"><i class="fab fa-tiktok text-2xl"></i></a>
+                    </div>
+                </div>
             </div>
-            <div class="flex justify-center space-x-4 mb-4 ">
-                <a href="https://www.instagram.com/dripking.eggy/ " target="_blank " class="hover:text-pink-500 "><i class="fab fa-instagram "></i></a>
-                <a href="https://www.tiktok.com/@drip.kingg11 " target="_blank " class="hover:text-white "><i class="fab fa-tiktok "></i></a>
-                <a href="https://www.facebook.com/yourpage " target="_blank " class="hover:text-blue-500 "><i class="fab fa-facebook-f "></i></a>
+            <!-- Developer -->
+            <div>
+                <h4 class="text-lg font-semibold mb-4 text-white">Developer</h4>
+                <div class="space-y-2">
+                    <p class="text-gray-500">Developed by Yousseif Saif</p>
+                    <a href="https://www.linkedin.com/in/yousseif-saif/" target="_blank" class="flex items-center text-gray-500 hover:text-blue-500 transition">
+                        <i class="fab fa-linkedin text-xl mr-2"></i>
+                        <span>Yousseif Saif</span>
+                    </a>
+                </div>
             </div>
         </div>
-        <div class="border-t border-gray-900 mt-8 pt-8 text-center text-white ">
+        <div class="border-t border-gray-900 mt-8 pt-8 text-center text-white text-sm">
             <p>© 2025 DRIP KING. All rights reserved.</p>
         </div>
     </footer>
